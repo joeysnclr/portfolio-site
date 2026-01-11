@@ -1,65 +1,144 @@
-import Image from "next/image";
+import Link from "next/link";
+import { getFeaturedProjects } from "@/lib/projects";
+import { FeaturedGrid } from "@/components/FeaturedGrid";
+import { Timeline } from "@/components/Timeline";
 
 export default function Home() {
+  const featured = getFeaturedProjects();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="max-w-4xl mx-auto px-6 py-16">
+      {/* Hero */}
+      <section className="mb-16">
+        <h1 className="text-2xl mb-4">Joey Sinclair</h1>
+        <p className="text-muted max-w-xl leading-relaxed mb-6">
+          Software engineer and data scientist with a focus on finding edges in
+          inefficient systems.
+        </p>
+        <p className="text-muted max-w-xl leading-relaxed mb-8">
+          Currently building{" "}
+          <Link
+            href="/projects/surface"
+            className="text-foreground hover:underline underline-offset-4"
+          >
+            surface.surf
+          </Link>
+          , a cross-exchange prediction market aggregator.
+        </p>
+        <div className="flex items-center gap-6">
+          <a
+            href="https://github.com/joeysnclr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted hover:text-foreground transition-colors"
+          >
+            github
+          </a>
+          <a
+            href="https://x.com/jitcommit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted hover:text-foreground transition-colors"
+          >
+            x/twitter
+          </a>
+        </div>
+      </section>
+
+      {/* Featured Projects - 2x2 Grid */}
+      <section className="mb-16">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg">Projects</h2>
+        </div>
+        <FeaturedGrid projects={featured} />
+      </section>
+
+      {/* Timeline */}
+      <section className="mb-16">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg">Timeline</h2>
+        </div>
+        <Timeline />
+      </section>
+
+      {/* Background */}
+      <section className="mb-16">
+        <h2 className="text-lg mb-6">Background</h2>
+        <div className="space-y-4 text-muted text-sm leading-relaxed">
+          <p>
+            Started programming at 16 building Supreme bots. They mostly didn't
+            work, but I learned reverse engineering, browser automation, and how
+            to find edges in systems. Did $16k volume on StockX.
+          </p>
+          <p>
+            During COVID, shipped{" "}
+            <Link
+              href="/projects/spoti-cli"
+              className="text-foreground hover:underline underline-offset-4"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              spoti-cli
+            </Link>
+            , a terminal Spotify client with vim bindings.
+          </p>
+          <p>
+            Got into Solana NFTs in 2021, built DAO tools, and exited before the
+            crash.
+          </p>
+          <p>
+            Spent 2023-2025 deep in baseball modeling. Built a full prediction
+            system for MLB player props with ridge regression, rolling stats,
+            and Monte Carlo backtesting. Never placed actual bets, but the
+            system works end-to-end.
+          </p>
+          <p>
+            Graduated from Berkeley with a Data Science degree in December 2025.
+            The poker course unexpectedly connected to prediction market work.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Skills */}
+      <section>
+        <h2 className="text-lg mb-6">Technical</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 text-sm">
+          <div>
+            <h3 className="text-foreground mb-2">Languages</h3>
+            <p className="text-muted">
+              Python (ML/ETL), Go (systems/APIs), TypeScript (frontend), SQL
+            </p>
+          </div>
+          <div>
+            <h3 className="text-foreground mb-2">Data / ML</h3>
+            <p className="text-muted">
+              pandas, scikit-learn, XGBoost, dbt, PostgreSQL, pgvector
+            </p>
+          </div>
+          <div>
+            <h3 className="text-foreground mb-2">Backend</h3>
+            <p className="text-muted">
+              FastAPI, Go chi, SQLite/Turso, Redis for caching
+            </p>
+          </div>
+          <div>
+            <h3 className="text-foreground mb-2">Frontend</h3>
+            <p className="text-muted">
+              React, Next.js, Tailwind, Streamlit, Bubbletea TUI
+            </p>
+          </div>
+          <div>
+            <h3 className="text-foreground mb-2">Infra</h3>
+            <p className="text-muted">
+              Docker, Vercel, Railway, GitHub Actions CI/CD
+            </p>
+          </div>
+          <div>
+            <h3 className="text-foreground mb-2">Interests</h3>
+            <p className="text-muted">
+              Prediction markets, sports analytics, reverse engineering, TUIs
+            </p>
+          </div>
         </div>
-      </main>
+      </section>
     </div>
   );
 }
