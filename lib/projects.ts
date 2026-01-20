@@ -81,18 +81,19 @@ The current matching is pairwise. A graph-based approach tracking all contracts 
 Backtesting prediction market strategies requires realistic simulation of order execution, timing, and market impact. Most backtesting frameworks make assumptions that work for traditional markets but fail for prediction markets' unique characteristics: low liquidity, long settlement times, and binary outcomes.
 
 ## Technical Approach
+The system depends on Dome API for historical L2 order book snapshots on both Kalshi and Polymarket. Neither exchange exposes historical book data through their APIs - Dome provides this infrastructure.
+
 I designed a clock abstraction that enables identical strategy code to run live or in backtest mode. The clock interface handles time progression, price updates, and order lifecycle uniformly regardless of execution context.
 
 The system separates concerns cleanly:
 - Exchange adapters normalize API responses from Kalshi, Polymarket, and future markets
-- Candle aggregators handle sparse data and synthetic bar generation
-- Order simulators apply realistic execution delays to prevent lookahead bias
+- Dome client handles snapshot ingestion with rate limiting and pagination
 - Strategy logic remains completely decoupled from execution mode
 
 ## Interesting Challenges
-Prediction markets often have illiquid periods with sparse trades. Standard candlestick algorithms break when there are gaps. I built synthetic candle generation that interpolates during quiet periods without introducing artificial patterns.
+The core challenge was designing a system where live and backtest share the same code path. The clock abstraction lets strategies subscribe to price updates and submit orders without knowing whether they're running against historical data or live markets. Flipping between modes is a config change, not a code change.
 
-Execution delay simulation was critical. In backtest mode, filling orders at current prices introduces severe lookahead bias. The system now simulates realistic fill prices by sampling from recent trade distributions.
+Getting the abstractions right took iteration. The exchange interface, the clock, the order lifecycle - each needed to be general enough to handle both contexts without leaking implementation details into strategy code.
 
 ## What I'd Do Differently
 The current architecture is synchronous. An event-driven approach with a message queue would better handle high-frequency updates from multiple exchanges simultaneously.`,
@@ -158,6 +159,7 @@ The resume embedding approach treats the entire document as one vector. Chunking
     ],
     links: {
       github: "https://github.com/joeysnclr/latentjobs",
+      live: "https://latentjobs-production.up.railway.app/",
     },
     isPublic: false,
     featured: true,
@@ -179,22 +181,20 @@ MLB player props (hits, strikeouts, runs, etc.) are binary over/under markets. T
 I built two custom models that output probability distributions:
 - XGDiscrete: XGBoost with softmax activation for discrete outcome probabilities
 - RidgeKNN: Ridge regression for feature weighting combined with KNN neighbor voting for distribution estimation
-
 Feature engineering via dbt includes:
-- Rolling statistics (xwOBA, hard hit rate, K rate) with configurable lookback windows
-- Batter vs pitcher matchup history with split statistics
+- Rolling statistics (xwOBA, hard hit rate, K rate) with handedness and pitch type splits
 - Park factors scraped from Baseball Savant
-- Defensive metrics and handedness adjustments
+- Defensive metrics, handedness adjustments, wind, and temperature
 
 The backtesting framework uses Monte Carlo simulation to evaluate parlay strategies across different payout structures (PrizePicks flex, Underdog power). Kelly criterion integration for bankroll sizing.
 
 ## Interesting Challenges
 Player props markets are efficient. The edge from statistical models is small, requiring disciplined bankroll management. The Monte Carlo simulation was essential for understanding variance in multi-leg parlays.
 
-Player injuries and lineup changes introduce noise that rolling statistics can't fully capture. Weather and umpire effects also matter but were deprioritized.
+Player injuries and lineup changes introduce noise that rolling statistics can't fully capture.
 
 ## What I'd Do Differently
-The system treats each prop independently. A multi-output model capturing correlations between props (e.g., a pitcher's strikeouts and hits allowed) could find parlay edges that independent models miss.`,
+The system treats each prop independently. A full game simulator would capture the correlation structure between props and players - when one batter gets on base, it affects the next batter's RBI opportunities. That correlation is where parlay edge lives.`,
     year: "2023-2025",
     era: "Baseball Modeling",
     tech: [
@@ -217,22 +217,28 @@ The system treats each prop independently. A multi-output model capturing correl
     ],
     links: {
       github: "https://github.com/joeysnclr/propengine",
+      live: "https://propengine-production.up.railway.app/",
     },
     isPublic: false,
     featured: true,
     status: "archived",
     type: "research",
+    images: ["/images/prop_engine.png"],
   },
   {
     slug: "mlbdatatools",
     title: "mlbdatatools | Baseball Analytics Library",
     description:
-      "Baseball analytics Python library. Type-safe DataFrames, multi-source fetching, and plotting utilities for Statcast analysis.",
+      "Baseball analytics Python library exposing data unavailable elsewhere—Savant player page Statcast splits/percentiles and per-play OAA via hidden API. Type-safe DataFrames with plotting utilities.",
     year: "2024",
     era: "Baseball Modeling",
     tech: ["Python", "pandas", "polars", "matplotlib"],
     longDescription: `## The Problem
-Baseball data comes from multiple sources with inconsistent schemas. pybaseball provides Statcast but lacks utility functions for common analytics workflows. Copy-pasting code between projects was error-prone.
+Baseball data comes from multiple sources with inconsistent schemas. pybaseball provides Statcast but lacks utility functions for common analytics workflows. More importantly, some of the most useful data on Baseball Savant isn't exposed through any official API.
+
+## Unique Data Access
+- Savant player pages: Scrapes embedded JSON for career Statcast splits and percentile rankings—no API exists for this.
+- Hidden OAA endpoint: Undocumented API for per-play outs above average, not just season aggregates.
 
 ## Technical Approach
 Built a type-safe library for modern baseball analytics:
@@ -245,34 +251,41 @@ Built a type-safe library for modern baseball analytics:
 Data quality issues in baseball data are subtle. Batter handedness splits, park factors, and even basic stats like ERA require careful handling. The library enforces validation at data ingestion time.
 
 ## What I'd Do Differently
-The library is useful but undermaintained. Modern alternatives like pybaseball have caught up on utility functions. The value now is primarily in my personal workflow rather than as a public library.`,
+The library is useful but undermaintained. Modern alternatives like pybaseball have caught up on utility functions. The unique value now is primarily the hidden data access—the Savant player page scraping and undocumented OAA endpoint remain useful.`,
     links: {
       github: "https://github.com/joeysnclr/mlbdatatools",
     },
     isPublic: true,
     status: "shipped",
     type: "library",
+    images: ["/images/mlbdatatools.png"],
   },
-  {
-    slug: "baseball-research",
-    title: "Baseball Research",
-    description:
-      "Collection of baseball modeling experiments including pitch classification, Statcast analysis, and swing/miss severity tracking.",
-    year: "2023-2025",
-    era: "Baseball Modeling",
-    tech: ["Python", "pandas", "scikit-learn", "Statcast", "XGBoost"],
-    longDescription: `## The Problem
-Beyond the main prop prediction system, I explored various baseball modeling questions that didn't fit into the main pipeline.
 
-## Research Projects
-- Pitch classification usingStatcast trackman data and XGBoost
-- Swing severity analysis tracking where in the zone batters miss
-- Batter/pitcher split modeling with rolling statistics
-- Park factor calculations and adjustment methodologies
+
+  // 2023: Platform Science Internship
+  {
+    slug: "platform-science",
+    title: "Platform Science | Software Engineer Intern",
+    description:
+      "Go backend testing for fleet telematics. Protocol Buffers, goroutines, and 25% coverage increase across 29 PRs.",
+    longDescription: `## The Role
+Software engineering intern at Platform Science, a fleet management telematics company. Focused on test coverage for the Go backend.
+
+## What I Did
+- Wrote 29 PRs covering Protocol Buffer implementations and struct declarations
+- Increased repository test coverage by 25%
+- Built integration tests for goroutine/channel patterns in production business logic
 
 ## What I Learned
-Baseball has incredibly rich data but modeling edge is hard to find. Most obvious signals are already priced into the market. The real edge comes from novel data sources or alternative modeling approaches.`,
-    isPublic: false,
+Testing concurrent code taught me goroutines and channels better than any tutorial. Race conditions only surface under specific timing—writing tests that reliably trigger edge cases forced deep understanding.
+
+ProtoBuf serialization has subtle edge cases (nil vs empty slices, default values, nested messages) that only surface in tests.`,
+    year: "2023",
+    era: "Work Experience",
+    tech: ["Go", "Protocol Buffers", "Unit Testing", "Goroutines/Channels"],
+    isPublic: true,
+    status: "shipped",
+    type: "tool",
   },
 
   // 2025 Dec: Berkeley
@@ -280,27 +293,24 @@ Baseball has incredibly rich data but modeling edge is hard to find. Most obviou
     slug: "berkeley",
     title: "UC Berkeley | Data Science",
     description:
-      "Graduated December 2025. Data Engineering, Blockchain for Developers, and Intro to Poker. Game theory meets quantitative analysis.",
+      "Data engineering, ML fundamentals, probability, blockchain, poker theory, and more.",
     year: "2025",
     era: "Education",
-    tech: ["Python", "SQL", "Spark", "Solidity", "Game Theory"],
-    longDescription: `## The Problem
-Data science curriculum focuses heavily on analysis but less on engineering. I wanted exposure to production-grade systems work alongside the theoretical foundations.
+    tech: ["Python", "SQL", "Solidity"],
+    longDescription: `## Data 101: Data Engineering
+- Relational algebra as foundation for understanding query execution
+- Query optimization: how the database plans and executes SQL
+- Declarative language paradigm: specify what, engine figures out how
 
-## Relevant Coursework
-- Data Engineering: Large-scale data pipelines with Spark, dbt, and Airflow. Built ETL pipelines processing millions of records.
-- Blockchain for Developers: Solidity smart contracts, DeFi protocols, and EVM internals. Built a prediction market contract as the final project.
-- Intro to Poker: Game theory, expected value calculations, and decision making under uncertainty. Connected directly to my interest in prediction markets.
+## Blockchain for Developers (CS 198-077)
+- Built blockchain from scratch in Python
+- Solidity smart contracts: deployment, testing, ERC-20 tokens
+- Web3.js integration with Ethereum
 
-## What I Got Out of It
-The poker course was surprisingly relevant to quantitative work. EV calculations, range thinking, and Bayesian updating transfer directly to sports modeling and prediction markets.
-
-Data Engineering shifted how I think about ML systems. Feature stores, data quality monitoring, and pipeline orchestration are as important as the models themselves.`,
-    features: [
-      "Data Engineering - large-scale data pipelines",
-      "Blockchain for Developers - Solidity smart contracts",
-      "Intro to Poker - game theory and decision making under uncertainty",
-    ],
+## Intro to Poker (STAT 198)
+- Expected value and variance as decision-making framework
+- Hand ranges and combinatorics
+- GTO concepts and preflop range construction`,
     isPublic: true,
     status: "shipped",
     type: "education",
@@ -308,58 +318,16 @@ Data Engineering shifted how I think about ML systems. Feature stores, data qual
 
   // 2021-2022: NFT/Solana Era
   {
-    slug: "remnants-autoplay",
-    title: "Remnants Autoplay | Solana NFT Game Bot",
+    slug: "solana-nft-tooling",
+    title: "Solana NFT Tooling | MagicEden Analytics, NFT Game Autoplay Bot",
     description:
-      "Solana NFT game bot with Ed25519 wallet authentication. Multi-NFT state machine, Discord notifications, and automatic redeployment.",
-    longDescription: `## The Problem
-Remnants is a Solana NFT idle game where you send characters on timed expeditions to earn tokens. Expeditions take anywhere from 10 minutes to 8 hours. Manually checking and redeploying NFTs constantly is tedious and guarantees you'll miss expedition completions.
+      "NFT collection analytics and game automation tools. Metaplex metadata parsing, trait-based floor prices, Twitter sales announcements, and automated game bot with Ed25519 wallet authentication.",
+    longDescription: `## Chartboy - Collection Analytics
 
-## Technical Approach
-The bot handles the complete expedition lifecycle:
-- Solana keypair loading from base58-encoded private keys
-- Wallet authentication via Ed25519 message signing (challenge/response JWT flow)
-- Multi-NFT state machine tracking expedition status and timers
-- Discord webhook notifications for completed expeditions with loot summaries
-- Automatic redeployment of NFTs immediately after completion
-
-## Interesting Challenges
-Solana's Ed25519 signature scheme requires careful implementation. I built raw signature verification into the authentication flow rather than relying on high-level libraries.
-
-The state machine handles partial completions and network failures gracefully. If an expedition completes while the bot is offline, it catches up on missed claims on next run.
-
-## What I'd Do Differently
-The current implementation polls continuously. Webhook-based notifications from the game server would be more efficient, but the game doesn't support them. The bot is essentially a workaround for game design that assumes constant player attention.`,
-    year: "2022",
-    era: "NFT/Solana",
-    tech: ["Python", "Solana", "Ed25519", "Discord Webhooks"],
-    features: [
-      "Solana keypair loading and message signing",
-      "Wallet based JWT authentication",
-      "Multi-NFT expedition management",
-      "Discord notifications for loot claims",
-    ],
-    links: {
-      github: "https://github.com/joeysnclr/remnants_autoplay",
-    },
-    isPublic: true,
-    featured: false,
-    status: "archived",
-    type: "tool",
-    images: ["/images/remnants.png"],
-  },
-  {
-    slug: "chartboy",
-    title: "Chartboy | NFT Collection Analytics",
-    description:
-      "NFT collection analytics API with Twitter sales announcements. Metaplex metadata parsing, trait-based floor prices, historical tracking, and automated announcements.",
-    year: "2021",
-    era: "NFT/Solana",
-    tech: ["TypeScript", "Express", "Solana Web3.js", "Metaplex", "Twitter API"],
-    longDescription: `## The Problem
+### The Problem
 NFT collections have complex metadata structures. Floor prices and average sale prices are misleading because each NFT has unique traits. Additionally, sales happen constantly across marketplaces, and Twitter was where the community gathered. There was no automated way to announce sales from specific collections.
 
-## Technical Approach
+### Technical Approach
 Express API with Solana Web3.js for blockchain queries and Metaplex for NFT metadata:
 - Batch fetch all NFTs in a collection
 - Parse on-chain and Arweave metadata for trait extraction
@@ -372,20 +340,27 @@ Twitter integration for automated announcements:
 - Format tweets with sale price, NFT image, and marketplace link
 - Rate limiting handling for Twitter's API constraints
 
-## Interesting Challenges
-Solana's RPC is rate-limited and slow. I implemented request batching and caching to avoid rate limits while maintaining responsive charts.
+---
 
-This was my first TypeScript project. The type safety caught numerous bugs during development, especially around metadata parsing where API responses varied unexpectedly.
+## Remnants Autoplay - Game Bot
 
-Twitter's API has strict rate limits. The bot had to batch transactions and spread posts over time to avoid being locked out.
+### The Problem
+Remnants is a Solana NFT idle game where you send characters on timed expeditions to earn tokens. Expeditions take anywhere from 10 minutes to 8 hours. Manually checking and redeploying NFTs constantly is tedious and guarantees you'll miss expedition completions.
 
-## What I'd Do Differently
-The project solved a real problem during the NFT boom but was narrowly scoped to one collection. A generalized tool for any Metaplex collection would have been more valuable but required more upfront schema work.
-
-The project worked well but was brittle. Twitter API changes have broken similar bots multiple times. A more robust architecture would separate detection from posting and use a message queue for durability.`,
+### Technical Approach
+The bot handles the complete expedition lifecycle:
+- Solana keypair loading from base58-encoded private keys
+- Wallet authentication via Ed25519 message signing (challenge/response JWT flow)
+- Multi-NFT state machine tracking expedition status and timers
+- Discord webhook notifications for completed expeditions with loot summaries
+- Automatic redeployment of NFTs immediately after completion`,
+    year: "2021-2022",
+    era: "NFT/Solana",
+    tech: ["TypeScript", "Python", "Express", "Solana Web3.js", "Metaplex", "Ed25519", "Twitter API", "Discord Webhooks"],
     isPublic: false,
     status: "archived",
     type: "tool",
+    images: ["/images/remnants.png"],
   },
 
   // 2020: COVID / Senior Year
@@ -442,109 +417,50 @@ This was a COVID senior year project. The architecture is fine for what it does,
     type: "tool",
     images: ["/images/spoti-cli.png"],
   },
-  {
-    slug: "url-short",
-    title: "URL Shortener | Link Analytics",
-    description:
-      "URL shortener with click analytics. MongoDB storage, geographic tracking, referrer analysis, and custom short codes.",
-    year: "2020",
-    era: "COVID / Senior Year",
-    tech: ["MongoDB", "Express", "React", "Node.js"],
-    longDescription: `## The Problem
-URL shorteners like Bitly were popular but the analytics were limited. I wanted click tracking with geographic data, referrer analysis, and custom short codes.
-
-## Technical Approach
-MERN stack application:
-- MongoDB for link storage and click event logs
-- Express API for link creation and click tracking
-- React dashboard for analytics visualization
-- 301 redirects for SEO preservation
-
-## Interesting Challenges
-High-volume click tracking requires careful database design. I used capped collections for click logs to prevent unbounded growth while maintaining aggregate statistics.
-
-This was my first full-stack project. The architecture is naive by modern standards but it worked for personal use.
-
-## What I'd Do Differently
-The project solved a problem I didn't actually have at scale. Bitly's free tier was sufficient for actual use cases. The value was in learning full-stack development, not in the utility of the final product.`,
-    links: {
-      github: "https://github.com/joeysnclr/url-short",
-    },
-    isPublic: true,
-    status: "archived",
-    type: "product",
-  },
-
   // 2017-2019: Reseller Era
   {
-    slug: "premebase",
-    title: "PremeBase | StockX Analytics Platform",
+    slug: "reseller-tools",
+    title: "Reseller Tools | Supreme Bot, Shopify Monitors, StockX Analytics",
     description:
-      "StockX analytics platform. Web scraping pipeline, historical price tracking by model/size, and trend analysis models.",
-    year: "2019",
+      "Supreme checkout bots, Shopify restock monitors, and StockX analytics. The tooling stack that drove sneaker resale volume.",
+    year: "2017-2019",
     era: "Reseller Era",
-    tech: ["Python", "FastAPI", "PostgreSQL"],
-    longDescription: `## The Problem
-StockX and GOAT have opaque pricing. Historical sale data is behind paywalls or requires manual searching. For sneaker resale, understanding price trends was essential for profitable flipping.
-
-## Technical Approach
-Data collection and analytics platform:
-- Web scraping of StockX sale listings
-- Historical price tracking by model and size
-- Trend analysis and price prediction models
-- REST API for programmatic access
-
-## Interesting Challenges
-StockX's anti-scraping measures required careful request pacing and header management. I learned about rate limiting, IP rotation, and session management.
-
-The analytics were useful but the predictions were naive. Price prediction in resale markets is heavily influenced by hype and influencer behavior that statistical models can't capture.
-
-## What I'd Do Differently
-The project was technically functional but didn't produce actionable predictions. The real value would have been in faster data collection or better data sources, not improved models. I pivoted to baseball modeling where the underlying phenomena are more predictable.`,
-    isPublic: false,
-    status: "unreleased",
-    type: "product",
-  },
-  {
-    slug: "reseller-bots",
-    title: "Reseller Bots | Supreme & Shopify Automation",
-    description:
-      "Supreme checkout automation and Shopify restock monitoring. Selenium browser automation and Discord notification system.",
-    year: "2017-2018",
-    era: "Reseller Era",
-    tech: ["Python", "Selenium", "Requests", "Discord Webhooks"],
-    longDescription: `## The Problem
-Supreme drops new products every Wednesday at 10AM EST. Popular items sell out in seconds. Nike and Adidas restock inventory randomly. By the time you check, shoes are already sold out. Manual monitoring and purchasing was impractical.
-
-## Technical Approach
-Built two complementary automation tools:
-
-**Supreme Bots:**
-- Selenium-based browser automation for checkout
-- Form filling for shipping and payment
-- Timing optimization to hit checkout the instant products dropped
-- API pattern discovery for faster navigation
-
-**Restock Monitors:**
-- Polled Shopify product availability endpoints
-- Detected restock patterns and notification triggers
-- Multi-retailer support (Nike, Foot Locker, etc.)
-- Discord webhook integration for instant alerts
-
-## Interesting Challenges
-reCAPTCHA v3 was essentially unbeatable. The behavioral analysis flags automated patterns instantly. Most Supreme bots didn't get past the initial page load.
-
-Retailers use various anti-bot measures. Timing and request patterns matter. The monitoring approach needed to be stealthy enough to avoid IP blocks while responsive enough to catch brief restock windows.
-
-## What I'd Do Differently
-The Supreme bots didn't work, but the failures taught me more than success would have. Browser fingerprinting, proxy rotation, and session management are all relevant skills I've used since. This was the beginning of my programming journey - $16k StockX volume at age 16.`,
+    tech: ["Python", "FastAPI", "PostgreSQL", "Selenium", "Requests", "Discord Webhooks"],
     features: [
-      "Browser automation for Supreme checkouts",
-      "Shopify restock monitoring",
-      "Discord notifications for alerts",
-      "Multi-retailer support",
-      "$16k StockX volume at age 16",
+      "Selenium browser automation for Supreme drops",
+      "Shopify restock detection with Discord alerts",
+      "StockX historical price tracking by model/size",
+      "Multi-retailer support (Nike, Foot Locker, etc.)",
+      "Web scraping pipeline with anti-bot evasion",
     ],
+    longDescription: `## The Problem
+Supreme drops new products every Thursday at 11AM EST. Popular items sell out in under 3 seconds. I was 16, in high school, and drops happened during class. Manual purchasing was impossible.
+
+## Technical Approach
+Built two systems: checkout automation and market intelligence.
+
+**Checkout Automation:**
+- Selenium browser automation for Supreme checkout flow
+- Requests-based approach for speed (browser overhead was too slow)
+- Hybrid method using ATC (add-to-cart) links to skip product pages entirely
+- Form autofill for shipping/payment to minimize checkout time
+
+**Market Intelligence:**
+- Shopify endpoint polling for restock detection
+- StockX price scraping for resale value research (Premebase - unfinished)
+- Discord webhooks for instant alerts
+
+## Interesting Challenges
+**reCAPTCHA was the wall.** Only triggered on checkout submission (button click or POST endpoint), but enough to kill most automation attempts.
+
+**The bypass I missed:** Supreme's checkout accepted an empty string for \`g_captcha_response\` in the POST body, completely bypassing verification. People printed. I found out after it was patched.
+
+**Python + Selenium issues:** GIL meant my multi-window approach never worked reliably. Combined with being stuck in class during drops, I never successfully botted a hyped release.
+
+**What did work:** Successfully purchased socks outside of peak drop times. Small wins.
+
+## What I Learned
+The bots didn't work, but the failures taught me reverse engineering, session management, anti-bot evasion, and proxy rotation. These skills transferred directly to later projects.`,
     isPublic: false,
     status: "archived",
     type: "tool",

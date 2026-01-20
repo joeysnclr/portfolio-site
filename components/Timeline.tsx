@@ -4,17 +4,14 @@ import { TimelineEntry } from "./TimelineEntry";
 const TIMELINE_ORDER = [
   "surface",
   "berkeley",
+  "platform-science",
   "oracle-engine",
   "latentjobs",
   "mlb-prediction-system",
   "mlbdatatools",
-  "baseball-research",
-  "remnants-autoplay",
-  "chartboy",
+  "solana-nft-tooling",
   "spoti-cli",
-  "url-short",
-  "premebase",
-  "reseller-bots",
+  "reseller-tools",
 ];
 
 export function Timeline() {

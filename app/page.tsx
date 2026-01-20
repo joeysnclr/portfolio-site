@@ -10,22 +10,21 @@ export default function Home() {
     <div className="max-w-4xl mx-auto px-6 py-16">
       {/* Hero */}
       <section className="mb-16">
-        <h1 className="text-2xl mb-4">Joey Sinclair</h1>
+          <h1 className="text-2xl mb-4">Joey Sinclair <span className="text-muted text-lg font-normal">Berkeley Data Science '25</span></h1>
         <p className="text-muted max-w-xl leading-relaxed mb-6">
-          Software engineer and data scientist with a focus on finding edges in
-          inefficient systems.
+          Software engineer and data scientist. Finding signals. Building tools.
         </p>
         <p className="text-muted max-w-xl leading-relaxed mb-8">
           Currently building{" "}
-          <Link
-            href="/projects/surface"
-            className="text-foreground hover:underline underline-offset-4"
-          >
-            surface.surf
-          </Link>
-          , a cross-exchange prediction market aggregator.
-        </p>
-        <div className="flex items-center gap-6">
+            <Link
+              href="/projects/surface"
+              className="text-foreground hover:underline underline-offset-4"
+            >
+              surface.surf
+            </Link>
+            , a cross-exchange prediction market aggregator.
+          </p>
+          <div className="flex items-center gap-6">
           <a
             href="https://github.com/joeysnclr"
             target="_blank"
@@ -66,33 +65,20 @@ export default function Home() {
         <h2 className="text-lg mb-6">Background</h2>
         <div className="space-y-4 text-muted text-sm leading-relaxed">
           <p>
-            Started programming at 16 building Supreme bots. They mostly didn't
-            work, but I learned reverse engineering, browser automation, and how
-            to find edges in systems. Did $16k volume on StockX.
-          </p>
-          <p>
-            During COVID, shipped{" "}
+            Currently building{" "}
             <Link
-              href="/projects/spoti-cli"
+              href="/projects/surface"
               className="text-foreground hover:underline underline-offset-4"
             >
-              spoti-cli
+              surface.surf
             </Link>
-            , a terminal Spotify client with vim bindings.
+            , a cross-exchange prediction market aggregator. The space is fragmented and inefficient—I'm fixing that.
           </p>
           <p>
-            Got into Solana NFTs in 2021, built DAO tools, and exited before the
-            crash.
+            My approach: find edges in inefficient systems, then build end-to-end tools that capture them.
           </p>
           <p>
-            Spent 2023-2025 deep in baseball modeling. Built a full prediction
-            system for MLB player props with ridge regression, rolling stats,
-            and Monte Carlo backtesting. Never placed actual bets, but the
-            system works end-to-end.
-          </p>
-          <p>
-            Graduated from Berkeley with a Data Science degree in December 2025.
-            The poker course unexpectedly connected to prediction market work.
+            Started at 16 with Supreme bots—learned reverse engineering and browser automation. Moved to Solana NFTs in 2021, built DAO tools, moved on before the market cooled. Spent 2023-2025 on MLB player props modeling: ridge regression, rolling stats, Monte Carlo backtesting. Full prediction system, end-to-end.
           </p>
         </div>
       </section>

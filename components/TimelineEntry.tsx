@@ -10,6 +10,7 @@ interface TimelineEntryProps {
 }
 
 export function TimelineEntry({ project, showLine = true }: TimelineEntryProps) {
+  const [mainTitle, type] = project.title.split(" | ");
   return (
     <div className="relative pb-8 last:pb-0">
       <div className="flex gap-6">
@@ -41,38 +42,38 @@ export function TimelineEntry({ project, showLine = true }: TimelineEntryProps) 
 
         <div className="flex-1 min-w-0">
           <Link href={`/projects/${project.slug}`} className="block group">
-            <div className="flex items-center gap-3 mb-1 flex-wrap">
-              <h3 className="text-foreground group-hover:underline underline-offset-4">
-                {project.title}
-              </h3>
-              <span className="text-sm text-muted">{project.year}</span>
-            </div>
+            <h3 className="text-foreground group-hover:underline underline-offset-4 mb-1">
+              {mainTitle}
+            </h3>
+            <p className="text-xs text-muted mb-3">
+              {type} | {project.year}
+            </p>
             <p className="text-sm text-muted line-clamp-2 mb-3">
               {project.description}
             </p>
           </Link>
 
           <div className="flex flex-wrap gap-2 items-center">
-            {project.links?.live && (
-              <a
-                href={project.links.live}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-600 border border-blue-500/30 hover:bg-blue-500/30 transition-colors"
-              >
-                site
-              </a>
-            )}
-            {project.links?.github && !project.links?.live && (
-              <a
-                href={project.links.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs px-2 py-0.5 bg-amber-500/20 text-amber-600 border border-amber-500/30 hover:bg-amber-500/30 transition-colors"
-              >
-                code
-              </a>
-            )}
+                {project.links?.live && (
+                  <a
+                    href={project.links.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-600 border border-blue-500/30 hover:bg-blue-500/30 transition-colors"
+                  >
+                    site
+                  </a>
+                )}
+                {project.links?.github && (
+                  <a
+                    href={project.links.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs px-2 py-0.5 bg-amber-500/20 text-amber-600 border border-amber-500/30 hover:bg-amber-500/30 transition-colors"
+                  >
+                    code
+                  </a>
+                )}
 
             {project.tech.slice(0, 5).map((t) => (
               <span

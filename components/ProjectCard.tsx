@@ -7,6 +7,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, showYear = true }: ProjectCardProps) {
+  const [mainTitle, type] = project.title.split(" | ");
   return (
     <Link
       href={`/projects/${project.slug}`}
@@ -15,26 +16,16 @@ export function ProjectCard({ project, showYear = true }: ProjectCardProps) {
       <article className="py-4 border-b border-border group-hover:border-foreground transition-colors duration-150">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-1">
-              <h3 className="text-foreground group-hover:underline underline-offset-4">
-                {project.title}
-              </h3>
-              {project.status === "active" && (
-                <span className="text-xs px-2 py-0.5 bg-foreground text-background">
-                  active
-                </span>
-              )}
-              {project.isPublic && (
-                <span className="text-xs text-muted">public</span>
-              )}
-            </div>
+            <h3 className="text-foreground group-hover:underline underline-offset-4 mb-1">
+              {mainTitle}
+            </h3>
+            <p className="text-xs text-muted mb-2">
+              {type} | {project.year}
+            </p>
             <p className="text-sm text-muted line-clamp-2">
               {project.description}
             </p>
           </div>
-          {showYear && (
-            <span className="text-sm text-muted shrink-0">{project.year}</span>
-          )}
         </div>
         {project.tech.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-3">

@@ -17,16 +17,6 @@ export function Header() {
           joey sinclair
         </Link>
         <nav className="flex items-center gap-6">
-          <Link
-            href="/projects"
-            className={`text-sm transition-colors ${
-              pathname === "/projects"
-                ? "text-foreground"
-                : "text-muted hover:text-foreground"
-            }`}
-          >
-            projects
-          </Link>
           <ThemeToggle />
         </nav>
       </div>

@@ -89,16 +89,38 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {project.longDescription.split("\n\n").map((paragraph, i) => {
                 if (paragraph.startsWith("## ")) {
                   const [header, ...rest] = paragraph.split("\n");
+                  const elements: React.ReactNode[] = [];
+                  let currentBullets: string[] = [];
+
+                  const flushBullets = () => {
+                    if (currentBullets.length > 0) {
+                      elements.push(
+                        <ul key={`bullets-${elements.length}`} className="space-y-0.5 list-none pl-0 mb-1">
+                          {currentBullets.map((line, j) => (
+                            <li key={j} className="text-muted">{line.replace(/^- /, "")}</li>
+                          ))}
+                        </ul>
+                      );
+                      currentBullets = [];
+                    }
+                  };
+
+                  rest.forEach((line, j) => {
+                    if (line.startsWith("- ")) {
+                      currentBullets.push(line);
+                    } else {
+                      flushBullets();
+                      elements.push(<p key={`p-${j}`} className="mb-1">{line}</p>);
+                    }
+                  });
+                  flushBullets();
+
                   return (
                     <div key={i} className="mb-6">
-                      <h2 className="text-foreground text-base font-normal mb-3">
+                      <h2 className="text-foreground text-base font-normal mb-2">
                         {header.replace("## ", "")}
                       </h2>
-                      {rest.map((line, j) => (
-                        <p key={j} className="mb-2">
-                          {line}
-                        </p>
-                      ))}
+                      {elements}
                     </div>
                   );
                 }
@@ -126,7 +148,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
           {project.tech.length > 0 && (
             <section>
-              <h2 className="text-sm text-muted mb-3">Tech Stack</h2>
+              <h2 className="text-sm text-muted mb-3">Tech</h2>
               <div className="flex flex-wrap gap-2">
                 {project.tech.map((t) => (
                   <span key={t} className="text-sm px-3 py-1 border border-border">
