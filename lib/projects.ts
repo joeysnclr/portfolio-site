@@ -317,7 +317,7 @@ ProtoBuf serialization has subtle edge cases (nil vs empty slices, default value
   },
   {
     slug: "solana-nft-tooling",
-    title: "Solana NFT Tooling",
+    title: "Solana NFT Tools",
     subtitle: "MagicEden Sniping Notifications, NFT Game Autoplay Bot",
     description:
       "Discord webhook bots for NFT collection sniping. Undercut and rare trait alerts with historical price charts. Also built an autoplay bot for an NFT idle game.",
