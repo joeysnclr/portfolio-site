@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 import { getProjectBySlug, projects } from "@/lib/projects";
 
 interface ProjectPageProps {
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: ProjectPageProps) {
   }
 
   return {
-    title: `${project.title} - Joey Sinclair`,
+    title: `${project.title} | ${project.subtitle} - Joey Sinclair`,
     description: project.description,
   };
 }
@@ -53,8 +54,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <h1 className="text-2xl">{project.title}</h1>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted mb-4 flex-wrap">
-              <span>{project.year}</span>
-              <span>{project.era}</span>
+              <span>{project.subtitle} | {project.year}</span>
             </div>
             <p className="text-muted leading-relaxed">{project.description}</p>
           </header>
@@ -86,46 +86,43 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
           {project.longDescription && (
             <div className="prose prose-sm text-muted">
-              {project.longDescription.split("\n\n").map((paragraph, i) => {
-                if (paragraph.startsWith("## ")) {
-                  const [header, ...rest] = paragraph.split("\n");
-                  const elements: React.ReactNode[] = [];
-                  let currentBullets: string[] = [];
-
-                  const flushBullets = () => {
-                    if (currentBullets.length > 0) {
-                      elements.push(
-                        <ul key={`bullets-${elements.length}`} className="space-y-0.5 list-none pl-0 mb-1">
-                          {currentBullets.map((line, j) => (
-                            <li key={j} className="text-muted">{line.replace(/^- /, "")}</li>
-                          ))}
-                        </ul>
-                      );
-                      currentBullets = [];
-                    }
-                  };
-
-                  rest.forEach((line, j) => {
-                    if (line.startsWith("- ")) {
-                      currentBullets.push(line);
-                    } else {
-                      flushBullets();
-                      elements.push(<p key={`p-${j}`} className="mb-1">{line}</p>);
-                    }
-                  });
-                  flushBullets();
-
-                  return (
-                    <div key={i} className="mb-6">
-                      <h2 className="text-foreground text-base font-normal mb-2">
-                        {header.replace("## ", "")}
-                      </h2>
-                      {elements}
-                    </div>
-                  );
-                }
-                return <p key={i}>{paragraph}</p>;
-              })}
+              <ReactMarkdown
+                components={{
+                  h2: ({ children }) => (
+                    <h2 className="text-foreground text-base font-normal mb-2 mt-6 first:mt-0">
+                      {children}
+                    </h2>
+                  ),
+                  p: ({ children }) => <p className="mb-3 text-muted">{children}</p>,
+                  ul: ({ children }) => (
+                    <ul className="space-y-0.5 list-disc pl-4 mb-3 text-muted">{children}</ul>
+                  ),
+                  li: ({ children }) => <li className="text-muted">{children}</li>,
+                  strong: ({ children }) => (
+                    <strong className="text-foreground font-medium">{children}</strong>
+                  ),
+                  code: ({ children }) => (
+                    <code className="bg-muted/20 px-1 rounded text-sm">{children}</code>
+                  ),
+                  a: ({ href, children }) => (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-foreground underline underline-offset-2 hover:text-muted transition-colors inline-flex items-center gap-1"
+                    >
+                      {children}
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </svg>
+                    </a>
+                  ),
+                }}
+              >
+                {project.longDescription}
+              </ReactMarkdown>
             </div>
           )}
 

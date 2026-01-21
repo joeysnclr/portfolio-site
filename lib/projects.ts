@@ -1,10 +1,11 @@
 export interface Project {
   slug: string;
   title: string;
+  subtitle: string;
   description: string;
   longDescription?: string;
   year: string;
-  era: string;
+  category: "project" | "endeavor" | "experience" | "education";
   tech: string[];
   features?: string[];
   links?: {
@@ -12,69 +13,78 @@ export interface Project {
     live?: string;
   };
   isPublic: boolean;
-  featured?: boolean;
+  spotlight?: boolean;
   status?: "shipped" | "active" | "archived" | "unreleased";
-  type?: "product" | "tool" | "library" | "research" | "education";
   images?: string[];
 }
 
+// Sorting utilities
+function parseYear(year: string): number {
+  // Handle "2023-2025" → use end year (2025)
+  // Handle "2025" → use as-is
+  const parts = year.split("-");
+  return parseInt(parts[parts.length - 1], 10);
+}
+
+function byYearDesc(a: Project, b: Project): number {
+  return parseYear(b.year) - parseYear(a.year);
+}
+
 export const projects: Project[] = [
-  // 2025-2026: Prediction Markets
   {
     slug: "surface",
-    title: "Surface | Cross-Exchange Arbitrage",
+    title: "Surface",
+    subtitle: "Prediction Market Terminal",
     description:
-      "Cross-exchange prediction market arbitrage scanner. Finds pricing edges between Kalshi and Polymarket using semantic matching.",
+      "A cross-exchange trading terminal for prediction markets. Unified view across Kalshi, Polymarket, and more.",
     longDescription: `## The Problem
-Prediction markets on Kalshi (regulated, US-based) and Polymarket (crypto, offshore) often have equivalent contracts trading at different prices. A contract on Kalshi like "Will the Lakers win?" might be priced at 55¢ while the equivalent on Polymarket "Lakers vs Celtics - Lakers" trades at 60¢. These arbitrage opportunities exist but are hard to spot because contracts describe the same events differently.
+Prediction markets are fragmented. The same event trades on multiple exchanges (Kalshi, Polymarket, and others), often at different prices. Traders manually flip between platforms, miss pricing discrepancies, and have no unified view of where to get the best execution.
 
-## Technical Approach
-I built a hybrid search system combining BM25 for lexical matching with Gemini embeddings for semantic similarity. When new contracts appear, the system scores potential matches across both dimensions. A structured LLM agent then validates matches by extracting numeric lines (spreads, totals) and confirming event equivalence.
+There's no single place to see all your options, compare prices, and understand which exchange is leading or lagging on any given market.
 
-Key technical decisions:
-- Pure Go architecture with no CGO dependencies for easy deployment
-- SQLite/Turso for local storage with full-text search
-- Bubbletea TUI for manual mapping verification when matches are uncertain
-- 3-second polling interval for high-confidence real-time signals
+## What I Built
+A matching system that identifies equivalent markets across exchanges and surfaces them in one place. When "Lakers to win" is priced at 55¢ on one exchange and 60¢ on another, Surface shows you both - and the spread between them.
 
-## Interesting Challenges
-Contract vocabulary varies wildly between exchanges. "Will Trump win?" vs "2024 US Presidential Election - Trump" require semantic understanding to match correctly. The BM25 + embedding hybrid approach handles both exact phrase matches and conceptual overlap.
+The terminal is cross-exchange only. No exchange-specific markets cluttering the view. If a market doesn't exist on multiple platforms, it doesn't show up. This keeps the focus on what matters: finding the best price and spotting inefficiencies.
 
-Execution speed matters for arbitrage. I optimized the pipeline to surface high-confidence matches within seconds of price updates.
+## What It Offers
+- **Best price discovery**: See where any market is cheapest to buy or most profitable to sell
+- **Arbitrage surfacing**: Identify pricing discrepancies between exchanges in real-time
+- **Exchange analysis**: Understand which platforms lead or lag on pricing for different market types
+- **Unified trading view**: One terminal for markets that exist across exchanges
 
-## What I'd Do Differently
-The current matching is pairwise. A graph-based approach tracking all contracts simultaneously might find multi-leg arbitrage opportunities I currently miss. The Gemini API costs also add up - local embedding models could reduce expenses at some accuracy tradeoff.`,
+## The Vision
+Surface is the foundation for something bigger: an integrated sports data trading terminal. Think [Baseball Savant](https://baseballsavant.mlb.com) meets prediction markets. Live game data, player metrics, box scores, matchups, all contextualizing the markets you're trading. The goal is to help traders make statistically informed decisions, not just react to price movements.
+
+For now, the focus is on doing cross-exchange really well. The sports data integration comes next.`,
     year: "2026",
-    era: "Prediction Markets",
+    category: "project",
     tech: [
       "Go",
       "SQLite/Turso",
       "React",
-      "Gemini API",
-      "DSPy-Go",
-      "Bubbletea TUI",
-      "chi router",
+      "DFlow",
+      "Privy",
     ],
     features: [
-      "LLM-powered contract matching with hybrid search (BM25 + vector)",
-      "Real-time price monitoring across exchanges",
-      "Gemini embeddings for semantic search (768 dimensions)",
-      "TUI for manual mapping verification",
-      "Pure Go architecture - no CGO required",
-      "Multi-stage Docker deployment",
+      "Cross-exchange market matching",
+      "Real-time price comparison across platforms",
+      "Arbitrage opportunity detection",
+      "Exchange price analysis (leading/lagging)",
+      "Unified view of equivalent markets",
     ],
     links: {
       live: "https://surface.surf",
     },
     isPublic: false,
-    featured: true,
+    spotlight: true,
     status: "active",
-    type: "product",
     images: ["/images/surface.png"],
   },
   {
     slug: "oracle-engine",
-    title: "Oracle Engine | Prediction Market Backtester",
+    title: "Oracle Engine",
+    subtitle: "Prediction Market Backtester",
     description:
       "Prediction market backtesting and live trading system. Replicates real market conditions with clock abstraction and order simulation.",
     longDescription: `## The Problem
@@ -98,7 +108,7 @@ Getting the abstractions right took iteration. The exchange interface, the clock
 ## What I'd Do Differently
 The current architecture is synchronous. An event-driven approach with a message queue would better handle high-frequency updates from multiple exchanges simultaneously.`,
     year: "2025",
-    era: "Prediction Markets",
+    category: "project",
     tech: ["Go", "React", "SQLite", "Kalshi API", "Polymarket API", "TradingView Charts"],
     features: [
       "Clock abstraction for live/backtest mode switching",
@@ -112,16 +122,13 @@ The current architecture is synchronous. An event-driven approach with a message
       github: "https://github.com/joeysnclr/oracle-engine",
     },
     isPublic: true,
-    featured: true,
     status: "active",
-    type: "tool",
     images: ["/images/oracle-engine.png"],
   },
-
-  // 2025: Job Search Tools
   {
     slug: "latentjobs",
-    title: "Latent Jobs | AI-Powered Job Search",
+    title: "Latent Jobs",
+    subtitle: "AI-Powered Job Search",
     description:
       "Job search aggregator with semantic resume matching. Scrapes LinkedIn and uses embeddings to rank jobs by relevance.",
     longDescription: `## The Problem
@@ -140,7 +147,7 @@ Extracting consistent metadata from varied job descriptions required prompt engi
 ## What I'd Do Differently
 The resume embedding approach treats the entire document as one vector. Chunking the resume (skills section, experience section, projects) and matching against corresponding job sections could improve relevance.`,
     year: "2025",
-    era: "Job Search Tools",
+    category: "project",
     tech: [
       "Python",
       "FastAPI",
@@ -162,16 +169,13 @@ The resume embedding approach treats the entire document as one vector. Chunking
       live: "https://latentjobs-production.up.railway.app/",
     },
     isPublic: false,
-    featured: true,
     status: "shipped",
-    type: "product",
     images: ["/images/latent-jobs.png"],
   },
-
-  // 2023-2025: Baseball Modeling
   {
     slug: "mlb-prediction-system",
-    title: "PropEngine | MLB Player Props Prediction",
+    title: "Prop Engine",
+    subtitle: "MLB Player Props Prediction",
     description:
       "MLB player props prediction system with probability distributions. Monte Carlo backtesting on PrizePicks and similar platforms.",
     longDescription: `## The Problem
@@ -181,6 +185,7 @@ MLB player props (hits, strikeouts, runs, etc.) are binary over/under markets. T
 I built two custom models that output probability distributions:
 - XGDiscrete: XGBoost with softmax activation for discrete outcome probabilities
 - RidgeKNN: Ridge regression for feature weighting combined with KNN neighbor voting for distribution estimation
+
 Feature engineering via dbt includes:
 - Rolling statistics (xwOBA, hard hit rate, K rate) with handedness and pitch type splits
 - Park factors scraped from Baseball Savant
@@ -196,7 +201,7 @@ Player injuries and lineup changes introduce noise that rolling statistics can't
 ## What I'd Do Differently
 The system treats each prop independently. A full game simulator would capture the correlation structure between props and players - when one batter gets on base, it affects the next batter's RBI opportunities. That correlation is where parlay edge lives.`,
     year: "2023-2025",
-    era: "Baseball Modeling",
+    category: "project",
     tech: [
       "Python",
       "scikit-learn",
@@ -220,24 +225,23 @@ The system treats each prop independently. A full game simulator would capture t
       live: "https://propengine-production.up.railway.app/",
     },
     isPublic: false,
-    featured: true,
     status: "archived",
-    type: "research",
     images: ["/images/prop_engine.png"],
   },
   {
     slug: "mlbdatatools",
-    title: "mlbdatatools | Baseball Analytics Library",
+    title: "MLB Data Tools",
+    subtitle: "Baseball Analytics Library",
     description:
-      "Baseball analytics Python library exposing data unavailable elsewhere—Savant player page Statcast splits/percentiles and per-play OAA via hidden API. Type-safe DataFrames with plotting utilities.",
+      "Baseball analytics Python library exposing data unavailable elsewhere: Savant player page Statcast splits/percentiles and per-play OAA via hidden API. Type-safe DataFrames with plotting utilities.",
     year: "2024",
-    era: "Baseball Modeling",
+    category: "project",
     tech: ["Python", "pandas", "polars", "matplotlib"],
     longDescription: `## The Problem
 Baseball data comes from multiple sources with inconsistent schemas. pybaseball provides Statcast but lacks utility functions for common analytics workflows. More importantly, some of the most useful data on Baseball Savant isn't exposed through any official API.
 
 ## Unique Data Access
-- Savant player pages: Scrapes embedded JSON for career Statcast splits and percentile rankings—no API exists for this.
+- Savant player pages: Scrapes embedded JSON for career Statcast splits and percentile rankings. No API exists for this.
 - Hidden OAA endpoint: Undocumented API for per-play outs above average, not just season aggregates.
 
 ## Technical Approach
@@ -251,21 +255,18 @@ Built a type-safe library for modern baseball analytics:
 Data quality issues in baseball data are subtle. Batter handedness splits, park factors, and even basic stats like ERA require careful handling. The library enforces validation at data ingestion time.
 
 ## What I'd Do Differently
-The library is useful but undermaintained. Modern alternatives like pybaseball have caught up on utility functions. The unique value now is primarily the hidden data access—the Savant player page scraping and undocumented OAA endpoint remain useful.`,
+The library is useful but undermaintained. Modern alternatives like pybaseball have caught up on utility functions. The unique value now is primarily the hidden data access: the Savant player page scraping and undocumented OAA endpoint remain useful.`,
     links: {
       github: "https://github.com/joeysnclr/mlbdatatools",
     },
     isPublic: true,
     status: "shipped",
-    type: "library",
     images: ["/images/mlbdatatools.png"],
   },
-
-
-  // 2023: Platform Science Internship
   {
     slug: "platform-science",
-    title: "Platform Science | Software Engineer Intern",
+    title: "Platform Science",
+    subtitle: "Software Engineer Intern",
     description:
       "Go backend testing for fleet telematics. Protocol Buffers, goroutines, and 25% coverage increase across 29 PRs.",
     longDescription: `## The Role
@@ -277,25 +278,24 @@ Software engineering intern at Platform Science, a fleet management telematics c
 - Built integration tests for goroutine/channel patterns in production business logic
 
 ## What I Learned
-Testing concurrent code taught me goroutines and channels better than any tutorial. Race conditions only surface under specific timing—writing tests that reliably trigger edge cases forced deep understanding.
+Testing concurrent code taught me goroutines and channels better than any tutorial. Race conditions only surface under specific timing, so writing tests that reliably trigger edge cases forced deep understanding.
 
 ProtoBuf serialization has subtle edge cases (nil vs empty slices, default values, nested messages) that only surface in tests.`,
     year: "2023",
-    era: "Work Experience",
+    category: "experience",
     tech: ["Go", "Protocol Buffers", "Unit Testing", "Goroutines/Channels"],
     isPublic: true,
     status: "shipped",
-    type: "tool",
+    images: ["/images/plat_sci.png"],
   },
-
-  // 2025 Dec: Berkeley
   {
     slug: "berkeley",
-    title: "UC Berkeley | Data Science",
+    title: "UC Berkeley",
+    subtitle: "Data Science",
     description:
       "Data engineering, ML fundamentals, probability, blockchain, poker theory, and more.",
     year: "2025",
-    era: "Education",
+    category: "education",
     tech: ["Python", "SQL", "Solidity"],
     longDescription: `## Data 101: Data Engineering
 - Relational algebra as foundation for understanding query execution
@@ -313,85 +313,70 @@ ProtoBuf serialization has subtle edge cases (nil vs empty slices, default value
 - GTO concepts and preflop range construction`,
     isPublic: true,
     status: "shipped",
-    type: "education",
+    images: ["/images/berkeley.jpg"],
   },
-
-  // 2021-2022: NFT/Solana Era
   {
     slug: "solana-nft-tooling",
-    title: "Solana NFT Tooling | MagicEden Analytics, NFT Game Autoplay Bot",
+    title: "Solana NFT Tooling",
+    subtitle: "MagicEden Sniping Notifications, NFT Game Autoplay Bot",
     description:
-      "NFT collection analytics and game automation tools. Metaplex metadata parsing, trait-based floor prices, Twitter sales announcements, and automated game bot with Ed25519 wallet authentication.",
-    longDescription: `## Chartboy - Collection Analytics
+      "Discord webhook bots for NFT collection sniping. Undercut and rare trait alerts with historical price charts. Also built an autoplay bot for an NFT idle game.",
+    longDescription: `## Chartboy - Sniping Notifications
 
-### The Problem
-NFT collections have complex metadata structures. Floor prices and average sale prices are misleading because each NFT has unique traits. Additionally, sales happen constantly across marketplaces, and Twitter was where the community gathered. There was no automated way to announce sales from specific collections.
+Good sniping opportunities disappear in seconds. Undercuts and rare trait listings get swept before you can manually refresh MagicEden. I needed real-time alerts for specific collections I was watching.
 
-### Technical Approach
-Express API with Solana Web3.js for blockchain queries and Metaplex for NFT metadata:
-- Batch fetch all NFTs in a collection
-- Parse on-chain and Arweave metadata for trait extraction
-- Calculate floor prices by trait combination
-- Historical price tracking for market analysis
+Discord webhook bots monitoring MagicEden for specific NFT collections:
+- Alerts for undercuts (listings below recent floor)
+- Alerts for rare trait listings at reasonable prices
+- Historical price charts embedded directly in Discord messages using QuickChart API (generates chart images from a URL, no image hosting needed)
 
-Twitter integration for automated announcements:
-- Monitor Solana blockchain for marketplace transactions
-- Filter by collection address
-- Format tweets with sale price, NFT image, and marketplace link
-- Rate limiting handling for Twitter's API constraints
-
----
+Attempted to build out database storage for historical data and more sophisticated analytics, but it never worked out (MongoDB). The webhook bots were the useful part.
 
 ## Remnants Autoplay - Game Bot
 
-### The Problem
 Remnants is a Solana NFT idle game where you send characters on timed expeditions to earn tokens. Expeditions take anywhere from 10 minutes to 8 hours. Manually checking and redeploying NFTs constantly is tedious and guarantees you'll miss expedition completions.
 
-### Technical Approach
 The bot handles the complete expedition lifecycle:
-- Solana keypair loading from base58-encoded private keys
-- Wallet authentication via Ed25519 message signing (challenge/response JWT flow)
+- Wallet auth via Solana message signing and JWT flow to integrate with their backend API
 - Multi-NFT state machine tracking expedition status and timers
 - Discord webhook notifications for completed expeditions with loot summaries
 - Automatic redeployment of NFTs immediately after completion`,
     year: "2021-2022",
-    era: "NFT/Solana",
-    tech: ["TypeScript", "Python", "Express", "Solana Web3.js", "Metaplex", "Ed25519", "Twitter API", "Discord Webhooks"],
+    category: "endeavor",
+    tech: ["Python", "MagicEden API", "Discord Webhooks", "QuickChart API"],
     isPublic: false,
     status: "archived",
-    type: "tool",
     images: ["/images/remnants.png"],
   },
-
-  // 2020: COVID / Senior Year
   {
     slug: "spoti-cli",
-    title: "spoti-cli | Terminal Spotify Client",
+    title: "Spoti-CLI",
+    subtitle: "Terminal Spotify Client",
     description:
       "Terminal Spotify client with vim keybindings. AppleScript/D-Bus control, lyrics via Genius, and queue management.",
     longDescription: `## The Problem
-Spotify's desktop app is fine but requires mouse navigation. During COVID, I wanted a terminal-based solution for music control without leaving my development environment. The existing Spotify terminal clients were either abandonware or required DBus permissions that didn't work on macOS.
+During a period where I was deep into vim and optimizing my dev workflow, Spotify became a friction point. Switching windows to change tracks or browse playlists broke my flow. I wanted music control integrated directly into my terminal, something with vim keybindings that stayed out of my way.
 
 ## Technical Approach
-Built a TUI using Python's blessed library with vim-style keybindings:
-- j/k: navigate up/down
-- h/l: navigate left/right (playlists, albums, tracks)
-- space: play/pause
-- H/L: previous/next track
-- Queue management with dedicated keybindings
-- Lyrics fetching via Genius API
+Built a TUI using Python's blessed library with vim-style keybindings for navigation and playback.
 
-Playback control communicates with the Spotify desktop app via AppleScript (macOS) or D-Bus (Linux). This avoids authentication complexity since the desktop app handles credentials.
+Architecture highlights:
+- Component-based TUI: Base Component class handles render lifecycle (update/output/handleInput). ViewManager orchestrates the ~30 FPS render loop with a view history stack for back-navigation.
+- Template system: Menu and TextLines templates handle pagination, scrolling, and active item highlighting. New views just subclass and inherit all navigation behavior.
+- Action-based keybind system: Keys map to semantic actions ("j" -> "down" -> handler), making keybindings user-configurable via JSON config.
+- API layer: Wrapper handles automatic pagination and rate limiting. Endpoint-keyed caching persists to ~/.cache/spoti-cli/.
+
+Playback control goes through AppleScript (macOS) or D-Bus (Linux) rather than Spotify's Web API. System-level calls are significantly faster, resulting in instant response to play/pause/skip commands.
 
 ## Interesting Challenges
-AppleScript integration on macOS was brittle. The Spotify COM interface changes between versions. I added error handling and retry logic for common failure modes.
+Spotify OAuth: The authorization code flow with token refresh was its own mini-project. Spun up a local Flask server to catch the callback, then polled for the code before exchanging it for tokens. Auto-refresh handles session expiration transparently.
 
-Genius's API doesn't always have lyrics available. The fallback to "lyrics not found" was a better user experience than failing silently.
+Genius song matching: Genius's search API returns fuzzy matches, not exact. The matching algorithm searches "{song} {artist}", iterates results looking for case-insensitive artist name matches, and falls back to the first result. Then scrapes the actual lyrics from the Genius webpage since their API doesn't return lyrics directly. Not perfect, but works surprisingly well in practice.
 
 ## What I'd Do Differently
-This was a COVID senior year project. The architecture is fine for what it does, but modern alternatives (Spotify's Web API with OAuth) would be more cross-platform. The AppleScript dependency limits the project to macOS effectively.`,
+If I revisited this, I'd expand the scope: album art rendering in the terminal (sixel or kitty graphics protocol), richer queue management with reordering, and artist/genre radio for discovery. The core abstractions are solid enough to support these without major refactoring.`,
     year: "2020",
-    era: "COVID / Senior Year",
+    category: "project",
     tech: [
       "Python",
       "Flask",
@@ -412,19 +397,17 @@ This was a COVID senior year project. The architecture is fine for what it does,
       github: "https://github.com/joeysnclr/spoti-cli",
     },
     isPublic: true,
-    featured: false,
     status: "shipped",
-    type: "tool",
     images: ["/images/spoti-cli.png"],
   },
-  // 2017-2019: Reseller Era
   {
     slug: "reseller-tools",
-    title: "Reseller Tools | Supreme Bot, Shopify Monitors, StockX Analytics",
+    title: "Reseller Tools",
+    subtitle: "Supreme Bot, Shopify Monitors, StockX Analytics",
     description:
       "Supreme checkout bots, Shopify restock monitors, and StockX analytics. The tooling stack that drove sneaker resale volume.",
     year: "2017-2019",
-    era: "Reseller Era",
+    category: "endeavor",
     tech: ["Python", "FastAPI", "PostgreSQL", "Selenium", "Requests", "Discord Webhooks"],
     features: [
       "Selenium browser automation for Supreme drops",
@@ -439,52 +422,55 @@ Supreme drops new products every Thursday at 11AM EST. Popular items sell out in
 ## Technical Approach
 Built two systems: checkout automation and market intelligence.
 
-**Checkout Automation:**
+Checkout Automation:
 - Selenium browser automation for Supreme checkout flow
 - Requests-based approach for speed (browser overhead was too slow)
 - Hybrid method using ATC (add-to-cart) links to skip product pages entirely
 - Form autofill for shipping/payment to minimize checkout time
 
-**Market Intelligence:**
+Market Intelligence:
 - Shopify endpoint polling for restock detection
 - StockX price scraping for resale value research (Premebase - unfinished)
 - Discord webhooks for instant alerts
 
 ## Interesting Challenges
-**reCAPTCHA was the wall.** Only triggered on checkout submission (button click or POST endpoint), but enough to kill most automation attempts.
+reCAPTCHA was the wall. Only triggered on checkout submission (button click or POST endpoint), but enough to kill most automation attempts.
 
-**The bypass I missed:** Supreme's checkout accepted an empty string for \`g_captcha_response\` in the POST body, completely bypassing verification. People printed. I found out after it was patched.
+The bypass I missed: Supreme's checkout accepted an empty string for \`g_captcha_response\` in the POST body, completely bypassing verification. People printed. I found out after it was patched.
 
-**Python + Selenium issues:** GIL meant my multi-window approach never worked reliably. Combined with being stuck in class during drops, I never successfully botted a hyped release.
+Python + Selenium issues: GIL meant my multi-window approach never worked reliably. Combined with being stuck in class during drops, I never successfully botted a hyped release.
 
-**What did work:** Successfully purchased socks outside of peak drop times. Small wins.
+What did work: Successfully purchased socks outside of peak drop times. Small wins.
 
 ## What I Learned
 The bots didn't work, but the failures taught me reverse engineering, session management, anti-bot evasion, and proxy rotation. These skills transferred directly to later projects.`,
     isPublic: false,
     status: "archived",
-    type: "tool",
+    images: ["/images/reseller.jpeg"],
   },
-];
-
-export const eras = [
-  { name: "Prediction Markets", years: "2025-2026" },
-  { name: "Job Search Tools", years: "2025" },
-  { name: "Education", years: "2025" },
-  { name: "Baseball Modeling", years: "2023-2025" },
-  { name: "NFT/Solana", years: "2021-2022" },
-  { name: "COVID / Senior Year", years: "2020" },
-  { name: "Reseller Era", years: "2017-2019" },
 ];
 
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }
 
-export function getFeaturedProjects(): Project[] {
-  return projects.filter((p) => p.featured);
+export function getSpotlightProjects(): Project[] {
+  return projects.filter((p) => p.spotlight).sort(byYearDesc);
 }
 
-export function getProjectsByEra(era: string): Project[] {
-  return projects.filter((p) => p.era === era);
+export function getExperienceAndEducation(): Project[] {
+  return projects
+    .filter((p) => p.category === "experience" || p.category === "education")
+    .sort(byYearDesc);
+}
+
+export function getProjectsAndEndeavors(): Project[] {
+  return projects
+    .filter((p) => p.category === "project" || p.category === "endeavor")
+    .filter((p) => !p.spotlight)
+    .sort(byYearDesc);
+}
+
+export function getProjectsByCategory(category: Project["category"]): Project[] {
+  return projects.filter((p) => p.category === category).sort(byYearDesc);
 }
