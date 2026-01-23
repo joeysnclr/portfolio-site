@@ -118,9 +118,7 @@ The current architecture is synchronous. An event-driven approach with a message
       "React dashboard with TradingView charts",
       "Performance metrics (Sharpe, max drawdown, win rate)",
     ],
-    links: {
-      github: "https://github.com/joeysnclr/oracle-engine",
-    },
+    links: {},
     isPublic: true,
     status: "active",
     images: ["/images/oracle-engine.png"],
