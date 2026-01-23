@@ -12,8 +12,8 @@ interface TimelineEntryProps {
 export function TimelineEntry({ project, showLine = true }: TimelineEntryProps) {
   return (
     <div className="relative pb-8 last:pb-0">
-      <div className="flex gap-6">
-        <div className="flex-shrink-0 w-1/4">
+      <div className="flex flex-col gap-4 md:flex-row md:gap-6">
+        <div className="flex-shrink-0 w-full md:w-1/4">
           <Link href={`/projects/${project.slug}`} className="block group">
             <div className="aspect-video bg-muted/10 border border-border relative overflow-hidden">
               {project.images && project.images[0] ? (
@@ -32,12 +32,14 @@ export function TimelineEntry({ project, showLine = true }: TimelineEntryProps) 
           </Link>
         </div>
 
-        <div className="relative flex flex-col items-center flex-shrink-0">
+        <div className="relative hidden md:flex flex-col items-center flex-shrink-0">
           <div className="w-3 h-3 rounded-full bg-foreground z-10" />
           {showLine && (
             <div className="absolute top-3 bottom-0 w-px bg-border -z-0" />
           )}
         </div>
+
+        <div className="h-px w-full bg-border md:hidden" />
 
         <div className="flex-1 min-w-0">
           <Link href={`/projects/${project.slug}`} className="block group">
