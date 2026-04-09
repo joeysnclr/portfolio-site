@@ -12,10 +12,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const ResumeModal = dynamic(() => import("@/components/ResumeModal"), {
-  ssr: false,
-});
-
 const ImageModal = dynamic(() => import("@/components/ImageModal"), {
   ssr: false,
 });
@@ -191,7 +187,6 @@ function AccordionItem({
 }
 
 export default function Home() {
-  const [resumeOpen, setResumeOpen] = useState(false);
   const [activeImage, setActiveImage] = useState<{
     src: string;
     alt: string;
@@ -253,13 +248,7 @@ export default function Home() {
           >
             X
           </a>
-          <button
-            onClick={() => setResumeOpen(true)}
-            className="text-sm text-muted hover:text-foreground transition-colors ml-auto"
-          >
-            View Resume
-          </button>
-        </nav>
+          </nav>
 
         {/* Education */}
         <section className="mb-16">
@@ -313,7 +302,6 @@ export default function Home() {
         </section>
       </div>
 
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
       <ImageModal
         isOpen={activeImage !== null}
         imageSrc={activeImage?.src ?? null}
