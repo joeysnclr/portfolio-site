@@ -243,9 +243,9 @@ The system treats each prop independently. A full game simulator would capture t
     title: "Platform Science",
     subtitle: "Software Engineer Intern",
     description:
-      "Backend testing for fleet telematics in Go. Wrote 29 PRs, increased coverage by 25%, and tested Protocol Buffer and goroutine-heavy production systems.",
+      "Backend testing for truck fleet telematics in Go. Wrote 29 PRs, increased coverage by 25%, and tested Protocol Buffer and goroutine-heavy production systems.",
     longDescription: `## The Role
-Software engineering intern at Platform Science, a fleet management telematics company. Focused on test coverage for the Go backend.
+Software engineering intern at Platform Science, a truck fleet telematics company. Focused on test coverage for the Go backend.
 
 ## What I Did
 - Wrote 29 PRs covering Protocol Buffer implementations and struct declarations
