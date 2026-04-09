@@ -4,6 +4,12 @@ import Image from "next/image";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { getEducation, getExperience, getAllWork, Project } from "@/lib/projects";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const ResumeModal = dynamic(() => import("@/components/ResumeModal"), {
   ssr: false,
@@ -89,18 +95,24 @@ function AccordionItem({
             </span>
           )}
           {showScale && (
-            <span
-              className="hidden sm:flex items-center gap-1 shrink-0"
-                aria-label={`Scope: ${scale}/5`}
-                title={`Scope: ${scale}/5`}
-            >
-              {Array.from({ length: 5 }, (_, index) => (
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <span
-                  key={index}
-                  className={`h-3 w-2 ${index < scale ? "bg-foreground" : "bg-border"}`}
-                />
-              ))}
-            </span>
+                  className="hidden sm:flex items-center gap-1 shrink-0"
+                  aria-label={`Scope: ${scale}/5`}
+                >
+                  {Array.from({ length: 5 }, (_, index) => (
+                    <span
+                      key={index}
+                      className={`h-3 w-2 ${index < scale ? "bg-foreground" : "bg-border"}`}
+                    />
+                  ))}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>Scope: {scale}/5</span>
+              </TooltipContent>
+            </Tooltip>
           )}
           <span className="text-sm text-muted shrink-0">{project.year}</span>
         </span>
@@ -186,7 +198,7 @@ export default function Home() {
   const work = getAllWork();
 
   return (
-    <>
+    <TooltipProvider>
       <div className="max-w-2xl mx-auto px-6 py-8">
         {/* Social Links */}
         <nav className="flex items-center gap-6 mb-16">
@@ -273,6 +285,6 @@ export default function Home() {
         imageAlt={activeImage?.alt ?? "Project image"}
         onClose={() => setActiveImage(null)}
       />
-    </>
+    </TooltipProvider>
   );
 }
