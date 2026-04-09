@@ -372,7 +372,7 @@ If I revisited this, I'd expand the scope: album art rendering in the terminal (
     },
     isPublic: true,
     status: "shipped",
-    scale: 2,
+    scale: 3,
     stars: 12,
     images: ["/images/spoti-cli.png"],
   },
