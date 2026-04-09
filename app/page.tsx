@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { getEducation, getExperience, getAllWork, Project } from "@/lib/projects";
+import { Header } from "@/components/Header";
 import {
   Tooltip,
   TooltipContent,
@@ -31,14 +32,17 @@ function formatLinkLabel(url: string): string {
 
 function AccordionItem({
   project,
+  open,
+  onToggle,
   onOpenImage,
   isLast = false,
 }: {
   project: Project;
+  open: boolean;
+  onToggle: () => void;
   onOpenImage: (imageSrc: string, imageAlt: string) => void;
   isLast?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
   const scale = project.scale;
   const stars = project.stars;
   const showScale =
@@ -52,7 +56,7 @@ function AccordionItem({
   return (
     <div className={open && !isLast ? "pb-4 border-b border-border" : undefined}>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={onToggle}
         className="w-full flex items-baseline justify-between gap-8 group text-left cursor-pointer"
       >
         <span className="flex items-baseline gap-3 min-w-0 flex-1">
@@ -196,9 +200,34 @@ export default function Home() {
   const education = getEducation();
   const experience = getExperience();
   const work = getAllWork();
+  const allItems = useMemo(
+    () => [...education, ...experience, ...work].map((project) => project.slug),
+    [education, experience, work]
+  );
+  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
+  const allExpanded = allItems.length > 0 && allItems.every((slug) => openItems.has(slug));
+
+  function toggleItem(slug: string) {
+    setOpenItems((current) => {
+      const next = new Set(current);
+
+      if (next.has(slug)) {
+        next.delete(slug);
+      } else {
+        next.add(slug);
+      }
+
+      return next;
+    });
+  }
+
+  function toggleAll() {
+    setOpenItems(allExpanded ? new Set() : new Set(allItems));
+  }
 
   return (
     <TooltipProvider>
+      <Header allExpanded={allExpanded} onToggleAll={toggleAll} />
       <div className="max-w-2xl mx-auto px-6 py-8">
         {/* Social Links */}
         <nav className="flex items-center gap-6 mb-16">
@@ -240,6 +269,8 @@ export default function Home() {
               <AccordionItem
                 key={p.slug}
                 project={p}
+                open={openItems.has(p.slug)}
+                onToggle={() => toggleItem(p.slug)}
                 onOpenImage={(src, alt) => setActiveImage({ src, alt })}
                 isLast={index === education.length - 1}
               />
@@ -255,6 +286,8 @@ export default function Home() {
               <AccordionItem
                 key={p.slug}
                 project={p}
+                open={openItems.has(p.slug)}
+                onToggle={() => toggleItem(p.slug)}
                 onOpenImage={(src, alt) => setActiveImage({ src, alt })}
                 isLast={index === experience.length - 1}
               />
@@ -270,6 +303,8 @@ export default function Home() {
               <AccordionItem
                 key={p.slug}
                 project={p}
+                open={openItems.has(p.slug)}
+                onToggle={() => toggleItem(p.slug)}
                 onOpenImage={(src, alt) => setActiveImage({ src, alt })}
                 isLast={index === work.length - 1}
               />

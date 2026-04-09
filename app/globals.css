@@ -15,13 +15,6 @@
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
-.dark {
-  --background: #2f2b29;
-  --foreground: #f7f3ee;
-  --muted: #d4cbc2;
-  --border: #514b47;
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -30,13 +23,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-mono);
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-*,
-*::before,
-*::after {
-  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 ::selection {
