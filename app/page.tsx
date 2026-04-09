@@ -227,12 +227,6 @@ export default function Home() {
         {/* Social Links */}
         <nav className="flex items-center gap-6 mb-16">
           <a
-            href="mailto:joey@jsinclair.dev"
-            className="text-sm text-muted hover:text-foreground transition-colors"
-          >
-            Email
-          </a>
-          <a
             href="https://github.com/joeysnclr"
             target="_blank"
             rel="noopener noreferrer"
