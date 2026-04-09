@@ -6,6 +6,7 @@ export interface Project {
   longDescription?: string;
   year: string;
   category: "project" | "endeavor" | "experience" | "education";
+  role?: string;
   tech: string[];
   features?: string[];
   links?: {
@@ -15,15 +16,21 @@ export interface Project {
   isPublic: boolean;
   spotlight?: boolean;
   status?: "shipped" | "active" | "archived" | "unreleased";
+  scale?: 1 | 2 | 3 | 4 | 5;
+  stars?: number;
   images?: string[];
+  current?: boolean;
+  hidden?: boolean;
 }
 
 // Sorting utilities
 function parseYear(year: string): number {
   // Handle "2023-2025" → use end year (2025)
+  // Handle "Dec 2025", "Summer 2023" → extract 4-digit year
   // Handle "2025" → use as-is
-  const parts = year.split("-");
-  return parseInt(parts[parts.length - 1], 10);
+  const match = year.match(/\d{4}/g);
+  if (!match) return 0;
+  return parseInt(match[match.length - 1], 10);
 }
 
 function byYearDesc(a: Project, b: Project): number {
@@ -34,38 +41,33 @@ export const projects: Project[] = [
   {
     slug: "surface",
     title: "Surface",
-    subtitle: "Prediction Market Terminal",
+    subtitle: "Matching API",
     description:
-      "A cross-exchange trading terminal for prediction markets. Unified view across Kalshi, Polymarket, and more.",
+      "Cross-exchange prediction market matching API. Normalize fragmented market schemas and map equivalent contracts across Kalshi and Polymarket.",
     longDescription: `## The Problem
-Prediction markets are fragmented. The same event trades on multiple exchanges (Kalshi, Polymarket, and others), often at different prices. Traders manually flip between platforms, miss pricing discrepancies, and have no unified view of where to get the best execution.
+Prediction markets are fragmented. The same event trades on multiple exchanges, but each platform uses its own market structure, naming, and contract schema. Building on top of multiple venues means constantly translating between incompatible representations of the same underlying event.
 
-There's no single place to see all your options, compare prices, and understand which exchange is leading or lagging on any given market.
+That fragmentation makes even basic cross-exchange workflows painful. Before you can compare prices, run analytics, or build trading tools, you first need reliable contract-level matching.
 
 ## What I Built
-A matching system that identifies equivalent markets across exchanges and surfaces them in one place. When "Lakers to win" is priced at 55¢ on one exchange and 60¢ on another, Surface shows you both - and the spread between them.
+A matching API that identifies equivalent markets across exchanges and exposes them through a normalized interface. When two platforms list the same event with different naming, sides, or schema conventions, Surface maps them back to the same underlying contract.
 
-The terminal is cross-exchange only. No exchange-specific markets cluttering the view. If a market doesn't exist on multiple platforms, it doesn't show up. This keeps the focus on what matters: finding the best price and spotting inefficiencies.
+The core job is schema normalization and contract equivalence. Kalshi and Polymarket represent markets differently, so the system has to reconcile market metadata, outcomes, and naming conventions without leaking exchange-specific quirks into downstream consumers.
 
 ## What It Offers
-- **Best price discovery**: See where any market is cheapest to buy or most profitable to sell
-- **Arbitrage surfacing**: Identify pricing discrepancies between exchanges in real-time
-- **Exchange analysis**: Understand which platforms lead or lag on pricing for different market types
-- **Unified trading view**: One terminal for markets that exist across exchanges
+- **Cross-exchange contract matching**: Identify equivalent markets across platforms
+- **Normalized market schema**: Consume one API instead of exchange-specific payloads
+- **Foundation for downstream tooling**: Power analytics, pricing, and trading systems on top of matched markets
+- **Cleaner integrations**: Add new exchanges without rewriting consumer logic around each schema
 
 ## The Vision
-Surface is the foundation for something bigger: an integrated sports data trading terminal. Think [Baseball Savant](https://baseballsavant.mlb.com) meets prediction markets. Live game data, player metrics, box scores, matchups, all contextualizing the markets you're trading. The goal is to help traders make statistically informed decisions, not just react to price movements.
+Surface is infrastructure first. The goal is to make cross-exchange prediction market data composable: one contract model, one matching layer, and a clean foundation for anything built on top.
 
-For now, the focus is on doing cross-exchange really well. The sports data integration comes next.`,
+This is the hard part most products skip past. If the matching layer is unreliable, everything downstream breaks. Surface exists to solve that problem well.`,
     year: "2026",
     category: "project",
-    tech: [
-      "Go",
-      "SQLite/Turso",
-      "React",
-      "DFlow",
-      "Privy",
-    ],
+    role: "Founder",
+    tech: ["Go", "SQLite", "DSPy"],
     features: [
       "Cross-exchange market matching",
       "Real-time price comparison across platforms",
@@ -79,14 +81,34 @@ For now, the focus is on doing cross-exchange really well. The sports data integ
     isPublic: false,
     spotlight: true,
     status: "active",
+    scale: 5,
+    current: true,
     images: ["/images/surface.png"],
+  },
+  {
+    slug: "pmfees",
+    title: "PM Fees",
+    subtitle: "Prediction Market Fee Comparison",
+    description:
+      "Prediction market fee intelligence for traders. Compare fee curves, exchange rules, waivers, and scheduled pricing changes in one place.",
+    year: "2026",
+    category: "project",
+    role: "Project",
+    tech: ["Go", "React"],
+    links: {
+      live: "https://pmfees.com",
+    },
+    isPublic: false,
+    status: "active",
+    scale: 3,
+    images: ["/images/pmfees.png"],
   },
   {
     slug: "oracle-engine",
     title: "Oracle Engine",
-    subtitle: "Prediction Market Backtester",
+    subtitle: "Multi-Exchange Strategy Engine",
     description:
-      "Prediction market backtesting and live trading system. Replicates real market conditions with clock abstraction and order simulation.",
+      "A multi-exchange live-trading and backtesting engine for prediction markets built around a shared execution model. Write a strategy once, then run it against historical order books or live markets.",
     longDescription: `## The Problem
 Backtesting prediction market strategies requires realistic simulation of order execution, timing, and market impact. Most backtesting frameworks make assumptions that work for traditional markets but fail for prediction markets' unique characteristics: low liquidity, long settlement times, and binary outcomes.
 
@@ -109,7 +131,8 @@ Getting the abstractions right took iteration. The exchange interface, the clock
 The current architecture is synchronous. An event-driven approach with a message queue would better handle high-frequency updates from multiple exchanges simultaneously.`,
     year: "2025",
     category: "project",
-    tech: ["Go", "React", "SQLite", "Kalshi API", "Polymarket API", "TradingView Charts"],
+    role: "Project",
+    tech: ["Go", "Dome API"],
     features: [
       "Clock abstraction for live/backtest mode switching",
       "Execution delay simulation for realistic backtests",
@@ -118,17 +141,20 @@ The current architecture is synchronous. An event-driven approach with a message
       "React dashboard with TradingView charts",
       "Performance metrics (Sharpe, max drawdown, win rate)",
     ],
-    links: {},
+    links: {
+      github: "https://github.com/joeysnclr/oracle-engine",
+    },
     isPublic: true,
     status: "active",
+    scale: 4,
     images: ["/images/oracle-engine.png"],
   },
   {
-    slug: "latentjobs",
-    title: "Latent Jobs",
+    slug: "siftedjobs",
+    title: "Sifted Jobs",
     subtitle: "AI-Powered Job Search",
     description:
-      "Job search aggregator with semantic resume matching. Scrapes LinkedIn and uses embeddings to rank jobs by relevance.",
+      "A better way to browse LinkedIn jobs. LLM-powered metadata extraction makes filtering actually useful, and embeddings power personalized recommendations from a single resume upload.",
     longDescription: `## The Problem
 LinkedIn's job search is keyword-based and doesn't account for how well a role matches your actual background. A resume highlighting "Python, ML, analytics" might match "Java backend developer" on keyword overlap despite being a poor fit. Candidates need semantic matching, not just string matching.
 
@@ -146,15 +172,8 @@ Extracting consistent metadata from varied job descriptions required prompt engi
 The resume embedding approach treats the entire document as one vector. Chunking the resume (skills section, experience section, projects) and matching against corresponding job sections could improve relevance.`,
     year: "2025",
     category: "project",
-    tech: [
-      "Python",
-      "FastAPI",
-      "PostgreSQL",
-      "pgvector",
-      "OpenAI",
-      "DSPy",
-      "linkedin-api",
-    ],
+    role: "Project",
+    tech: ["Python", "pgvector", "OpenAI embeddings"],
     features: [
       "Vector similarity resume-to-job matching",
       "AI-powered job metadata extraction (GPT-4o-mini)",
@@ -163,19 +182,19 @@ The resume embedding approach treats the entire document as one vector. Chunking
       "Analytics dashboards for market insights",
     ],
     links: {
-      github: "https://github.com/joeysnclr/latentjobs",
-      live: "https://latentjobs-production.up.railway.app/",
+      live: "https://siftedjobs.com",
     },
     isPublic: false,
     status: "shipped",
-    images: ["/images/latent-jobs.png"],
+    scale: 3,
+    images: ["/images/siftedjobs.png"],
   },
   {
     slug: "mlb-prediction-system",
     title: "Prop Engine",
     subtitle: "MLB Player Props Prediction",
     description:
-      "MLB player props prediction system with probability distributions. Monte Carlo backtesting on PrizePicks and similar platforms.",
+      "MLB player props prediction system built with 35+ dbt models, custom probability-distribution ML, and Monte Carlo backtesting for parlay evaluation.",
     longDescription: `## The Problem
 MLB player props (hits, strikeouts, runs, etc.) are binary over/under markets. Traditional point estimation models output a single predicted value, but the actual betting decision depends on the full probability distribution. A predicted 7.5 strikeouts with 90% confidence is very different from a predicted 7.5 with 55% confidence.
 
@@ -198,75 +217,33 @@ Player injuries and lineup changes introduce noise that rolling statistics can't
 
 ## What I'd Do Differently
 The system treats each prop independently. A full game simulator would capture the correlation structure between props and players - when one batter gets on base, it affects the next batter's RBI opportunities. That correlation is where parlay edge lives.`,
-    year: "2023-2025",
+    year: "2024",
     category: "project",
-    tech: [
-      "Python",
-      "scikit-learn",
-      "XGBoost",
-      "PostgreSQL",
-      "SQLAlchemy",
-      "FastAPI",
-      "Streamlit",
-      "dbt",
-    ],
+    role: "Project",
+    tech: ["Python", "dbt", "XGBoost"],
     features: [
       "Custom ML models with probability distributions",
       "35+ dbt SQL models for feature engineering",
+      "Monte Carlo simulation for parlay backtesting",
       "Rolling statistics with configurable lookback windows",
       "Batter vs pitcher matchup modeling",
-      "Monte Carlo simulation for parlay backtesting",
       "Streamlit dashboard for daily props",
     ],
     links: {
-      github: "https://github.com/joeysnclr/propengine",
       live: "https://propengine-production.up.railway.app/",
     },
     isPublic: false,
     status: "archived",
+    scale: 5,
     images: ["/images/prop_engine.png"],
   },
-  {
-    slug: "mlbdatatools",
-    title: "MLB Data Tools",
-    subtitle: "Baseball Analytics Library",
-    description:
-      "Baseball analytics Python library exposing data unavailable elsewhere: Savant player page Statcast splits/percentiles and per-play OAA via hidden API. Type-safe DataFrames with plotting utilities.",
-    year: "2024",
-    category: "project",
-    tech: ["Python", "pandas", "polars", "matplotlib"],
-    longDescription: `## The Problem
-Baseball data comes from multiple sources with inconsistent schemas. pybaseball provides Statcast but lacks utility functions for common analytics workflows. More importantly, some of the most useful data on Baseball Savant isn't exposed through any official API.
 
-## Unique Data Access
-- Savant player pages: Scrapes embedded JSON for career Statcast splits and percentile rankings. No API exists for this.
-- Hidden OAA endpoint: Undocumented API for per-play outs above average, not just season aggregates.
-
-## Technical Approach
-Built a type-safe library for modern baseball analytics:
-- Unified DataFrame interfaces across Statcast, Baseball Reference, and Fangraphs data
-- Multi-source data fetching with automatic schema normalization
-- Plotting utilities for common visualizations (spray charts, heatmaps, timeline graphs)
-- pandas and polars backends for performance flexibility
-
-## Interesting Challenges
-Data quality issues in baseball data are subtle. Batter handedness splits, park factors, and even basic stats like ERA require careful handling. The library enforces validation at data ingestion time.
-
-## What I'd Do Differently
-The library is useful but undermaintained. Modern alternatives like pybaseball have caught up on utility functions. The unique value now is primarily the hidden data access: the Savant player page scraping and undocumented OAA endpoint remain useful.`,
-    links: {
-      github: "https://github.com/joeysnclr/mlbdatatools",
-    },
-    isPublic: true,
-    status: "shipped",
-    images: ["/images/mlbdatatools.png"],
-  },
   {
     slug: "platform-science",
     title: "Platform Science",
     subtitle: "Software Engineer Intern",
     description:
-      "Go backend testing for fleet telematics. Protocol Buffers, goroutines, and 25% coverage increase across 29 PRs.",
+      "Backend testing for fleet telematics in Go. Wrote 29 PRs, increased coverage by 25%, and tested Protocol Buffer and goroutine-heavy production systems.",
     longDescription: `## The Role
 Software engineering intern at Platform Science, a fleet management telematics company. Focused on test coverage for the Go backend.
 
@@ -279,11 +256,13 @@ Software engineering intern at Platform Science, a fleet management telematics c
 Testing concurrent code taught me goroutines and channels better than any tutorial. Race conditions only surface under specific timing, so writing tests that reliably trigger edge cases forced deep understanding.
 
 ProtoBuf serialization has subtle edge cases (nil vs empty slices, default values, nested messages) that only surface in tests.`,
-    year: "2023",
+    year: "Summer 2023",
     category: "experience",
+    role: "SWE Intern",
     tech: ["Go", "Protocol Buffers", "Unit Testing", "Goroutines/Channels"],
     isPublic: true,
     status: "shipped",
+    scale: 3,
     images: ["/images/plat_sci.png"],
   },
   {
@@ -291,9 +270,10 @@ ProtoBuf serialization has subtle edge cases (nil vs empty slices, default value
     title: "UC Berkeley",
     subtitle: "Data Science",
     description:
-      "Data engineering, ML fundamentals, probability, blockchain, poker theory, and more.",
-    year: "2025",
+      "Studied data engineering, machine learning, probability, blockchain, and poker at Berkeley. A lot of building, modeling, and learning how to think under uncertainty.",
+    year: "Dec 2025",
     category: "education",
+    role: "Data Science",
     tech: ["Python", "SQL", "Solidity"],
     longDescription: `## Data 101: Data Engineering
 - Relational algebra as foundation for understanding query execution
@@ -341,9 +321,11 @@ The bot handles the complete expedition lifecycle:
 - Automatic redeployment of NFTs immediately after completion`,
     year: "2021-2022",
     category: "endeavor",
+    role: "Project",
     tech: ["Python", "MagicEden API", "Discord Webhooks", "QuickChart API"],
     isPublic: false,
     status: "archived",
+    hidden: true,
     images: ["/images/remnants.png"],
   },
   {
@@ -351,7 +333,7 @@ The bot handles the complete expedition lifecycle:
     title: "Spoti-CLI",
     subtitle: "Terminal Spotify Client",
     description:
-      "Terminal Spotify client with vim keybindings. AppleScript/D-Bus control, lyrics via Genius, and queue management.",
+      "A keyboard-first Spotify client for the terminal with vim motions, lyrics, queue controls, and a custom TUI architecture behind it.",
     longDescription: `## The Problem
 During a period where I was deep into vim and optimizing my dev workflow, Spotify became a friction point. Switching windows to change tracks or browse playlists broke my flow. I wanted music control integrated directly into my terminal, something with vim keybindings that stayed out of my way.
 
@@ -375,14 +357,8 @@ Genius song matching: Genius's search API returns fuzzy matches, not exact. The 
 If I revisited this, I'd expand the scope: album art rendering in the terminal (sixel or kitty graphics protocol), richer queue management with reordering, and artist/genre radio for discovery. The core abstractions are solid enough to support these without major refactoring.`,
     year: "2020",
     category: "project",
-    tech: [
-      "Python",
-      "Flask",
-      "blessed (TUI)",
-      "Spotify API",
-      "Genius API",
-      "AppleScript/D-Bus",
-    ],
+    role: "Project",
+    tech: ["Python", "Spotify API"],
     features: [
       "Vim keybindings for navigation (j/k/h/l)",
       "Full playback control",
@@ -396,6 +372,8 @@ If I revisited this, I'd expand the scope: album art rendering in the terminal (
     },
     isPublic: true,
     status: "shipped",
+    scale: 2,
+    stars: 12,
     images: ["/images/spoti-cli.png"],
   },
   {
@@ -406,6 +384,7 @@ If I revisited this, I'd expand the scope: album art rendering in the terminal (
       "Supreme checkout bots, Shopify restock monitors, and StockX analytics. The tooling stack that drove sneaker resale volume.",
     year: "2017-2019",
     category: "endeavor",
+    role: "Project",
     tech: ["Python", "FastAPI", "PostgreSQL", "Selenium", "Requests", "Discord Webhooks"],
     features: [
       "Selenium browser automation for Supreme drops",
@@ -444,31 +423,33 @@ What did work: Successfully purchased socks outside of peak drop times. Small wi
 The bots didn't work, but the failures taught me reverse engineering, session management, anti-bot evasion, and proxy rotation. These skills transferred directly to later projects.`,
     isPublic: false,
     status: "archived",
+    hidden: true,
     images: ["/images/reseller.jpeg"],
   },
 ];
+
+// Query functions
 
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }
 
-export function getSpotlightProjects(): Project[] {
-  return projects.filter((p) => p.spotlight).sort(byYearDesc);
+export function getEducation(): Project[] {
+  return projects.filter((p) => p.category === "education" && !p.hidden).sort(byYearDesc);
+}
+
+export function getExperience(): Project[] {
+  return projects.filter((p) => p.category === "experience" && !p.hidden).sort(byYearDesc);
+}
+
+export function getAllWork(): Project[] {
+  return projects
+    .filter((p) => (p.category === "project" || p.category === "endeavor") && !p.hidden)
+    .sort(byYearDesc);
 }
 
 export function getExperienceAndEducation(): Project[] {
   return projects
-    .filter((p) => p.category === "experience" || p.category === "education")
+    .filter((p) => (p.category === "experience" || p.category === "education") && !p.hidden)
     .sort(byYearDesc);
-}
-
-export function getProjectsAndEndeavors(): Project[] {
-  return projects
-    .filter((p) => p.category === "project" || p.category === "endeavor")
-    .filter((p) => !p.spotlight)
-    .sort(byYearDesc);
-}
-
-export function getProjectsByCategory(category: Project["category"]): Project[] {
-  return projects.filter((p) => p.category === category).sort(byYearDesc);
 }

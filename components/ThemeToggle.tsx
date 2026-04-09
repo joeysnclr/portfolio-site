@@ -1,9 +1,19 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { useTheme } from "./ThemeProvider";
+
+function useHydrated() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+}
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const hydrated = useHydrated();
 
   return (
     <button
@@ -11,7 +21,7 @@ export function ThemeToggle() {
       className="text-sm text-muted hover:text-foreground transition-colors"
       aria-label="Toggle theme"
     >
-      {theme === "dark" ? "light" : "dark"}
+      {hydrated ? (theme === "dark" ? "light" : "dark") : "theme"}
     </button>
   );
 }

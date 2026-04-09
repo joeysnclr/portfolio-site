@@ -1,24 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
-  const pathname = usePathname();
-
   return (
-    <header className="border-b border-border">
-      <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+    <header>
+      <div className="max-w-2xl mx-auto px-6 pt-12 sm:pt-16 flex items-center justify-between">
         <Link
           href="/"
-          className="text-foreground hover:text-muted transition-colors"
+          className="text-sm text-muted hover:text-foreground transition-colors"
         >
-          joey sinclair
+          JS
         </Link>
-        <nav className="flex items-center gap-6">
-          <ThemeToggle />
-        </nav>
+        <ThemeToggle />
       </div>
     </header>
   );

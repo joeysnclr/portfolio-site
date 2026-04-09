@@ -5,7 +5,6 @@
   --foreground: #0a0a0a;
   --muted: #737373;
   --border: #e5e5e5;
-  --accent: #0a0a0a;
 }
 
 @theme inline {
@@ -13,16 +12,14 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
-  --color-accent: var(--accent);
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --muted: #a3a3a3;
-  --border: #262626;
-  --accent: #fafafa;
+  --background: #2f2b29;
+  --foreground: #f7f3ee;
+  --muted: #d4cbc2;
+  --border: #514b47;
 }
 
 html {
@@ -36,8 +33,9 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Smooth theme transitions */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
@@ -46,10 +44,9 @@ body {
   color: var(--background);
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -58,14 +55,13 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted);
 }
 
-/* Prose styles for long descriptions */
 .prose {
   max-width: 65ch;
   line-height: 1.75;

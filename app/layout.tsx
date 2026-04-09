@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -79,11 +78,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${ibmPlexMono.variable} font-mono antialiased`}>
         <ThemeProvider>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <Header />
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>
