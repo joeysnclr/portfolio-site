@@ -258,7 +258,7 @@ Testing concurrent code taught me goroutines and channels better than any tutori
 ProtoBuf serialization has subtle edge cases (nil vs empty slices, default values, nested messages) that only surface in tests.`,
     year: "Summer 2023",
     category: "experience",
-    role: "SWE Intern",
+    role: "Intern",
     tech: ["Go", "Protocol Buffers", "Unit Testing", "Goroutines/Channels"],
     isPublic: true,
     status: "shipped",
