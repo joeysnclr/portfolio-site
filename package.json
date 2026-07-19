@@ -9,12 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@radix-ui/react-tooltip": "^1.2.8",
     "next": "16.1.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "react-markdown": "^10.1.0",
-    "react-pdf": "^10.4.1"
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
