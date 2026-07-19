@@ -31,7 +31,7 @@ export const projects: Project[] = [
   {
     id: "surface",
     title: "Surface",
-    subtitle: "Matching API",
+    subtitle: "Founder & Engineer",
     description:
       "Cross-exchange prediction market matching API. Normalize fragmented market schemas and map equivalent contracts across Kalshi and Polymarket.",
     year: "Winter/Spring 2026",
