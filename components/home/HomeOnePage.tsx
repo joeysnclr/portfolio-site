@@ -215,7 +215,10 @@ export function HomeOnePage() {
     <>
       <PageHeader />
       <div className="max-w-3xl mx-auto px-6 py-8 pb-16">
-        <HomeOneLayout sections={sections} onOpenImage={setActiveImage} />
+        <HomeOneLayout
+          sections={sections}
+          onOpenImage={(src, alt) => setActiveImage({ src, alt })}
+        />
       </div>
 
       <ImageModal
