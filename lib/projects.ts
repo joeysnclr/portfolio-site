@@ -31,11 +31,11 @@ export const projects: Project[] = [
   {
     id: "surface",
     title: "Surface",
-    subtitle: "Founder & Engineer",
+    subtitle: "Prediction Market API",
     description:
       "Cross-exchange prediction market matching API. Normalize fragmented market schemas and map equivalent contracts across Kalshi and Polymarket.",
     year: "Winter/Spring 2026",
-    category: "experience",
+    category: "project",
     role: "Founder",
     tech: ["Go", "SQLite", "DSPy"],
     links: {
