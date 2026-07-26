@@ -64,9 +64,11 @@ function ProjectImage({
   onOpenImage: (imageSrc: string, imageAlt: string) => void;
 }) {
   const imageSrc = getPrimaryImage(project);
+  const isCompactImage = project.category !== "project";
+  const imageClassName = isCompactImage ? "aspect-square" : "aspect-[16/10]";
 
   if (!imageSrc) {
-    return <div className="aspect-[16/10] w-full border border-border bg-background" />;
+    return <div className={`${imageClassName} w-full border border-border bg-background`} />;
   }
 
   return (
@@ -81,8 +83,8 @@ function ProjectImage({
         alt={project.title}
         width={1200}
         height={780}
-        sizes="(min-width: 768px) 24rem, calc(100vw - 3rem)"
-        className="aspect-[16/10] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.015]"
+        sizes={isCompactImage ? "(min-width: 640px) 10rem, calc(100vw - 3rem)" : "(min-width: 768px) 24rem, calc(100vw - 3rem)"}
+        className={`${imageClassName} h-auto w-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.015]`}
       />
     </button>
   );
@@ -151,26 +153,32 @@ function ProjectEntry({
   project: Project;
   onOpenImage: (imageSrc: string, imageAlt: string) => void;
 }) {
-  return (
-    <article className="space-y-4 border-t border-border pt-5 first:border-t-0 first:pt-0">
-      <div className="flex items-start justify-between gap-4 text-sm">
+  const isProject = project.category === "project";
+  const imageElement = <ProjectImage project={project} onOpenImage={onOpenImage} />;
+  const textElement = (
+    <div className="space-y-2">
+      <div className="space-y-1 text-sm">
         <div className="min-w-0">
           <span className="text-foreground">{project.title}</span>
           <span className="text-muted"> | {project.subtitle}</span>
         </div>
-        {project.category !== "project" && (
-          <span className="shrink-0 text-muted">{project.year}</span>
-        )}
+        {!isProject ? <div className="text-muted">{project.year}</div> : null}
       </div>
+      <p className="text-sm text-muted leading-relaxed">{project.description}</p>
+      <LinkLine project={project} />
+      <TechLine project={project} />
+    </div>
+  );
 
-      <div className="grid gap-5 sm:grid-cols-2 sm:items-start">
-        <ProjectImage project={project} onOpenImage={onOpenImage} />
-
-        <div className="space-y-2">
-          <p className="text-sm text-muted leading-relaxed">{project.description}</p>
-          <LinkLine project={project} />
-          <TechLine project={project} />
-        </div>
+  return (
+    <article className="space-y-4 border-t border-border pt-5 first:border-t-0 first:pt-0">
+      <div
+        className={`grid gap-5 sm:items-start ${
+          isProject ? "sm:grid-cols-2" : "sm:grid-cols-[10rem_minmax(0,1fr)]"
+        }`}
+      >
+        {isProject ? textElement : imageElement}
+        {isProject ? imageElement : textElement}
       </div>
     </article>
   );
