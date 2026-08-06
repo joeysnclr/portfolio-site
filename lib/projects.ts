@@ -76,7 +76,7 @@ export const projects: Project[] = [
   {
     id: "platform-science",
     title: "Platform Science",
-    subtitle: "Software Engineering",
+    subtitle: "SWE Intern",
     description:
       "Platform Science gave me my first look at a production Go codebase. I worked on the telemetry backend, protobufs, and concurrency, and got a better sense of the kind of engineering work I want to do next.",
     year: "Summer 2023",
@@ -89,7 +89,7 @@ export const projects: Project[] = [
     title: "UC Berkeley",
     subtitle: "Data Science",
     description:
-      "I transferred to Berkeley to study Data Science. Outside class, I spent most of my time building things and learning about data systems, machine learning, and probability.",
+      "Studied data engineering, machine learning, and probability at Berkeley, along with classes in blockchain and poker.",
     year: "Dec 2025",
     category: "education",
     role: "Data Science",
