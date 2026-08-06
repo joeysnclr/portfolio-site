@@ -31,9 +31,9 @@ export const projects: Project[] = [
   {
     id: "surface",
     title: "Surface",
-    subtitle: "Prediction Market API",
+    subtitle: "Prediction Markets",
     description:
-      "Cross-exchange prediction market matching API. Normalize fragmented market schemas and map equivalent contracts across Kalshi and Polymarket.",
+      "I started Surface because I wanted to connect my baseball model to prediction markets. I needed a way to tell when markets on Kalshi and Polymarket were really asking the same question, so I built it.",
     year: "Winter/Spring 2026",
     category: "project",
     role: "Founder",
@@ -46,9 +46,9 @@ export const projects: Project[] = [
   {
     id: "siftedjobs",
     title: "Sifted Jobs",
-    subtitle: "AI-Powered Job Search",
+    subtitle: "Job Search",
     description:
-      "A better way to browse LinkedIn jobs. LLM-powered metadata extraction makes filtering actually useful, and embeddings power personalized recommendations from a single resume upload.",
+      "I got tired of opening job listings just to find out they wanted five years of experience. Sifted pulls the useful information out of job postings so I can find roles that actually make sense.",
     year: "2025",
     category: "project",
     role: "Project",
@@ -61,9 +61,9 @@ export const projects: Project[] = [
   {
     id: "prop-engine",
     title: "Prop Engine",
-    subtitle: "MLB Player Props Prediction",
+    subtitle: "Baseball Player Props",
     description:
-      "MLB player props prediction system built with 35+ dbt models, custom probability-distribution ML, and Monte Carlo backtesting for parlay evaluation.",
+      "Baseball is the project I keep coming back to. Prop Engine turns years of pitch data, matchup context, and research into player prop predictions.",
     year: "2024",
     category: "project",
     role: "Project",
@@ -76,9 +76,9 @@ export const projects: Project[] = [
   {
     id: "platform-science",
     title: "Platform Science",
-    subtitle: "Software Engineer Intern",
+    subtitle: "Software Engineering",
     description:
-      "Backend testing for truck fleet telematics in Go. Wrote 29 PRs, increased coverage by 25%, and tested Protocol Buffer and goroutine-heavy production systems.",
+      "Platform Science gave me my first look at a production Go codebase. I worked on the telemetry backend, protobufs, and concurrency, and got a better sense of the kind of engineering work I want to do next.",
     year: "Summer 2023",
     category: "experience",
     role: "Intern",
@@ -89,7 +89,7 @@ export const projects: Project[] = [
     title: "UC Berkeley",
     subtitle: "Data Science",
     description:
-      "Studied data engineering, machine learning, probability, blockchain, and poker at Berkeley. A lot of building, modeling, and learning how to think under uncertainty.",
+      "I transferred to Berkeley to study Data Science. Outside class, I spent most of my time building things and learning about data systems, machine learning, and probability.",
     year: "Dec 2025",
     category: "education",
     role: "Data Science",
@@ -98,9 +98,9 @@ export const projects: Project[] = [
   {
     id: "spoti-cli",
     title: "Spoti-CLI",
-    subtitle: "Terminal Spotify Client",
+    subtitle: "Spotify in the Terminal",
     description:
-      "A keyboard-first Spotify client for the terminal with vim motions, lyrics, queue controls, and a custom TUI architecture behind it.",
+      "I wanted to use Spotify without reaching for my mouse. Spoti CLI lets me browse my library, control playback, and navigate everything from the keyboard.",
     year: "2020",
     category: "project",
     role: "Project",

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | Joey Sinclair",
   },
   description:
-    "Software engineer building tools for prediction markets, sports analytics, and automation. Berkeley DS '25.",
+    "Software engineer building tools around sports, markets, search, and music.",
   keywords: [
     "software engineer",
     "data science",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Joey Sinclair",
     description:
-      "Software engineer building tools for prediction markets, sports analytics, and automation.",
+      "Software engineer building tools around sports, markets, search, and music.",
     type: "website",
     locale: "en_US",
     url: "/",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Joey Sinclair",
     description:
-      "Software engineer building tools for prediction markets, sports analytics, and automation.",
+      "Software engineer building tools around sports, markets, search, and music.",
     creator: "@jitcommit",
     images: ["/og-image.png"],
   },
