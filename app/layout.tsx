@@ -10,7 +10,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://joeysinclair.com"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://jsinclair.dev"
   ),
   title: {
     default: "Joey Sinclair",
