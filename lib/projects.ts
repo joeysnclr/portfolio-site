@@ -37,7 +37,7 @@ export const projects: Project[] = [
     year: "Winter/Spring 2026",
     category: "project",
     role: "Founder",
-    tech: ["Go", "SQLite", "DSPy"],
+    tech: ["Go", "DSPy", "Agent design", "Tool calling", "Benchmarking"],
     links: {
       live: "https://surfaceapi.com",
     },
@@ -52,7 +52,7 @@ export const projects: Project[] = [
     year: "2025",
     category: "project",
     role: "Project",
-    tech: ["Python", "pgvector", "OpenAI embeddings"],
+    tech: ["Python", "PostgreSQL", "OpenRouter", "Structured outputs", "Vector embeddings"],
     links: {
       live: "https://siftedjobs.com",
     },
