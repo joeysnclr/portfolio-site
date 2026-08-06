@@ -31,9 +31,9 @@ export const projects: Project[] = [
   {
     id: "surface",
     title: "Surface",
-    subtitle: "Prediction Markets",
+    subtitle: "Prediction Market API",
     description:
-      "I started Surface because I wanted to connect my baseball model to prediction markets. I needed a way to tell when markets on Kalshi and Polymarket were really asking the same question, so I built it.",
+      "I built Surface with the intention of connecting it to my baseball model, and started by matching equivalent markets across Kalshi and Polymarket.",
     year: "Winter/Spring 2026",
     category: "project",
     role: "Founder",
@@ -46,9 +46,9 @@ export const projects: Project[] = [
   {
     id: "siftedjobs",
     title: "Sifted Jobs",
-    subtitle: "Job Search",
+    subtitle: "AI-Powered Job Board",
     description:
-      "I got tired of opening job listings just to find out they wanted five years of experience. Sifted pulls the useful information out of job postings so I can find roles that actually make sense.",
+      "Reading job descriptions is tedious. Sifted Jobs pulls the useful information out of job postings so I can find roles that actually make sense.",
     year: "2025",
     category: "project",
     role: "Project",
@@ -61,7 +61,7 @@ export const projects: Project[] = [
   {
     id: "prop-engine",
     title: "Prop Engine",
-    subtitle: "Baseball Player Props",
+    subtitle: "Baseball Prediction Engine",
     description:
       "Baseball is the project I keep coming back to. Prop Engine turns years of pitch data, matchup context, and research into player prop predictions.",
     year: "2024",
@@ -78,7 +78,7 @@ export const projects: Project[] = [
     title: "Platform Science",
     subtitle: "SWE Intern",
     description:
-      "Platform Science gave me my first look at a production Go codebase. I worked on the telemetry backend, protobufs, and concurrency, and got a better sense of the kind of engineering work I want to do next.",
+      "Backend testing in Go for truck fleet telematics, protobufs, and concurrency.",
     year: "Summer 2023",
     category: "experience",
     role: "Intern",
@@ -89,7 +89,7 @@ export const projects: Project[] = [
     title: "UC Berkeley",
     subtitle: "Data Science",
     description:
-      "Studied data engineering, machine learning, and probability at Berkeley, along with classes in blockchain and poker.",
+      "Data engineering, ML, probability, blockchain, poker.",
     year: "Dec 2025",
     category: "education",
     role: "Data Science",
@@ -98,7 +98,7 @@ export const projects: Project[] = [
   {
     id: "spoti-cli",
     title: "Spoti-CLI",
-    subtitle: "Spotify in the Terminal",
+    subtitle: "Spotify Terminal App",
     description:
       "I wanted to use Spotify without reaching for my mouse. Spoti CLI lets me browse my library, control playback, and navigate everything from the keyboard.",
     year: "2020",

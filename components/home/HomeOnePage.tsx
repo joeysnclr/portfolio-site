@@ -189,14 +189,14 @@ function HomeOneLayout({
   sections,
   onOpenImage,
 }: {
-  sections: Array<{ title: string; items: Project[] }>;
+  sections: Array<{ title?: string; items: Project[] }>;
   onOpenImage: (imageSrc: string, imageAlt: string) => void;
 }) {
   return (
     <div className="space-y-12">
-      {sections.map((section) => (
-        <section key={section.title} className="space-y-4">
-          <SectionLabel label={section.title} />
+      {sections.map((section, index) => (
+        <section key={section.title ?? `section-${index}`} className="space-y-4">
+          {section.title ? <SectionLabel label={section.title} /> : null}
           <div className="space-y-5">
             {section.items.map((project) => (
               <ProjectEntry
@@ -216,7 +216,6 @@ export function HomeOnePage() {
   const [activeImage, setActiveImage] = useState<ActiveImage>(null);
   const sections = [
     {
-      title: "Education & Experience",
       items: [...getEducation(), ...getExperience()],
     },
     { title: "Projects", items: getProjects() },
