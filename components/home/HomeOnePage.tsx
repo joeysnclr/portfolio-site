@@ -107,38 +107,32 @@ function LinkLine({ project }: { project: Project }) {
     });
   }
 
+  if (links.length === 0) return null;
+
   return (
-    <div className="min-h-5 text-sm text-muted">
-      {links.length > 0 && (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground hover:underline underline-offset-4"
-              title={link.title}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      )}
+    <div className="text-sm text-muted">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        {links.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground hover:underline underline-offset-4"
+            title={link.title}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
 
 function TechLine({ project }: { project: Project }) {
-  if (project.category === "education") {
-    return <div className="min-h-5 text-sm text-muted" />;
-  }
+  if (project.category === "education" || project.tech.length === 0) return null;
 
-  return (
-    <div className="min-h-5 text-sm text-muted">
-      {project.tech.length > 0 ? project.tech.join(" · ") : null}
-    </div>
-  );
+  return <div className="text-sm text-muted">{project.tech.join(" · ")}</div>;
 }
 
 function SectionLabel({ label }: { label: string }) {
@@ -174,7 +168,11 @@ function ProjectEntry({
   );
 
   return (
-    <article className="space-y-4 border-t border-border pt-5 first:border-t-0 first:pt-0">
+    <article
+      className={`border-t border-border first:border-t-0 first:pt-0 ${
+        isProject ? "space-y-4 pt-5" : "space-y-2 pt-4"
+      }`}
+    >
       {isProject ? (
         <div className="grid gap-5 sm:grid-cols-2 sm:items-start">
           {textElement}
@@ -195,11 +193,11 @@ function HomeOneLayout({
   onOpenImage: (imageSrc: string, imageAlt: string) => void;
 }) {
   return (
-    <div className="space-y-16">
+    <div className="space-y-12">
       {sections.map((section) => (
-        <section key={section.title} className="space-y-6">
+        <section key={section.title} className="space-y-4">
           <SectionLabel label={section.title} />
-          <div className="space-y-8">
+          <div className="space-y-5">
             {section.items.map((project) => (
               <ProjectEntry
                 key={project.id}
@@ -217,8 +215,10 @@ function HomeOneLayout({
 export function HomeOnePage() {
   const [activeImage, setActiveImage] = useState<ActiveImage>(null);
   const sections = [
-    { title: "Education", items: getEducation() },
-    { title: "Experience", items: getExperience() },
+    {
+      title: "Education & Experience",
+      items: [...getEducation(), ...getExperience()],
+    },
     { title: "Projects", items: getProjects() },
   ];
 

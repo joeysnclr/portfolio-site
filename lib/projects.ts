@@ -82,10 +82,7 @@ export const projects: Project[] = [
     year: "Summer 2023",
     category: "experience",
     role: "Intern",
-    tech: ["Go", "Protocol Buffers", "Unit Testing", "Goroutines/Channels"],
-    links: {
-      live: "https://www.platformscience.com/",
-    },
+    tech: [],
   },
   {
     id: "berkeley",
