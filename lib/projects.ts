@@ -86,7 +86,6 @@ export const projects: Project[] = [
     links: {
       live: "https://www.platformscience.com/",
     },
-    images: ["/images/plat_sci.png"],
   },
   {
     id: "berkeley",
@@ -98,7 +97,6 @@ export const projects: Project[] = [
     category: "education",
     role: "Data Science",
     tech: ["Python", "SQL", "Solidity"],
-    images: ["/images/berkeley.jpg"],
   },
   {
     id: "spoti-cli",
