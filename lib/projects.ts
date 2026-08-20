@@ -27,6 +27,18 @@ function byYearDesc(a: Project, b: Project): number {
   return parseYear(b.year) - parseYear(a.year);
 }
 
+const projectDisplayOrder = ["prop-engine", "siftedjobs", "surface"];
+
+function byProjectDisplayOrder(a: Project, b: Project): number {
+  const aOrder = projectDisplayOrder.indexOf(a.id);
+  const bOrder = projectDisplayOrder.indexOf(b.id);
+
+  if (aOrder === -1) return bOrder === -1 ? 0 : 1;
+  if (bOrder === -1) return -1;
+
+  return aOrder - bOrder;
+}
+
 export const projects: Project[] = [
   {
     id: "surface",
@@ -122,5 +134,7 @@ export function getExperience(): Project[] {
 }
 
 export function getProjects(): Project[] {
-  return projects.filter((project) => project.category === "project").sort(byYearDesc);
+  return projects
+    .filter((project) => project.category === "project")
+    .sort(byProjectDisplayOrder);
 }
