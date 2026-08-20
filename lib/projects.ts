@@ -69,7 +69,7 @@ export const projects: Project[] = [
     role: "Project",
     tech: ["Python", "dbt", "XGBoost"],
     links: {
-      live: "https://propengine-production.up.railway.app/",
+      live: "https://mlbprop.com",
     },
     images: ["/images/prop_engine.png"],
   },
