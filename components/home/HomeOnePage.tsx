@@ -147,6 +147,7 @@ function ProjectEntry({
   onOpenImage: (imageSrc: string, imageAlt: string) => void;
 }) {
   const isProject = project.category === "project";
+  const hasSideImage = isProject || project.id === "surface";
   const imageElement = <ProjectImage project={project} onOpenImage={onOpenImage} />;
   const textElement = (
     <div className="space-y-2">
@@ -170,10 +171,10 @@ function ProjectEntry({
   return (
     <article
       className={`border-t border-border first:border-t-0 first:pt-0 ${
-        isProject ? "space-y-4 pt-5" : "space-y-2 pt-4"
+        hasSideImage ? "space-y-4 pt-5" : "space-y-2 pt-4"
       }`}
     >
-      {isProject ? (
+      {hasSideImage ? (
         <div className="grid gap-5 sm:grid-cols-2 sm:items-start">
           {textElement}
           {imageElement}
@@ -215,8 +216,7 @@ function HomeOneLayout({
 export function HomeOnePage() {
   const [activeImage, setActiveImage] = useState<ActiveImage>(null);
   const sections = [
-    { title: "Education", items: getEducation() },
-    { title: "Experience", items: getExperience() },
+    { items: [...getEducation(), ...getExperience()] },
     { title: "Projects", items: getProjects() },
   ];
 
