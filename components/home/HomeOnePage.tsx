@@ -148,6 +148,10 @@ function ProjectEntry({
 }) {
   const isProject = project.category === "project";
   const hasSideImage = isProject || project.id === "surface";
+  const sideImageGridClassName =
+    project.id === "surface"
+      ? "grid gap-5 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:items-start"
+      : "grid gap-5 sm:grid-cols-2 sm:items-start";
   const imageElement = <ProjectImage project={project} onOpenImage={onOpenImage} />;
   const textElement = (
     <div className="space-y-2">
@@ -175,7 +179,7 @@ function ProjectEntry({
       }`}
     >
       {hasSideImage ? (
-        <div className="grid gap-5 sm:grid-cols-2 sm:items-start">
+        <div className={sideImageGridClassName}>
           {textElement}
           {imageElement}
         </div>
