@@ -31,7 +31,7 @@ function getPrimaryImage(project: Project): string | null {
 function PageHeader() {
   return (
     <header>
-      <div className="max-w-3xl mx-auto px-6 pt-12 sm:pt-16 flex items-center justify-between">
+      <div className="max-w-[52rem] mx-auto px-6 pt-12 sm:pt-16 flex items-center justify-between">
         <span className="text-sm text-muted">JS</span>
         <nav className="flex items-center gap-6 text-sm text-muted">
           <a
@@ -149,12 +149,14 @@ function ProjectEntry({
   const isProject = project.category === "project";
   const hasSideImage = isProject || project.id === "surface";
   const sideImageGridClassName =
-    project.id === "surface"
-      ? "grid gap-5 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:items-start"
-      : "grid gap-5 sm:grid-cols-2 sm:items-start";
-  const imageElement = <ProjectImage project={project} onOpenImage={onOpenImage} />;
+    "grid gap-5 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:items-start";
+  const imageElement = (
+    <div className="order-1 sm:order-none">
+      <ProjectImage project={project} onOpenImage={onOpenImage} />
+    </div>
+  );
   const textElement = (
-    <div className="space-y-2">
+    <div className="order-2 space-y-2 sm:order-none">
       <div className="space-y-1 text-sm">
         <div className="flex items-baseline justify-between gap-4">
           <div className="min-w-0">
@@ -227,7 +229,7 @@ export function HomeOnePage() {
   return (
     <>
       <PageHeader />
-      <div className="max-w-3xl mx-auto px-6 py-8 pb-16">
+      <div className="max-w-[52rem] mx-auto px-6 py-8 pb-16">
         <HomeOneLayout
           sections={sections}
           onOpenImage={(src, alt) => setActiveImage({ src, alt })}
