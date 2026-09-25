@@ -27,7 +27,7 @@ function byYearDesc(a: Project, b: Project): number {
   return parseYear(b.year) - parseYear(a.year);
 }
 
-const projectDisplayOrder = ["prop-engine", "siftedjobs", "surface"];
+const projectDisplayOrder = ["siftedjobs", "prop-engine", "spoti-cli"];
 
 function byProjectDisplayOrder(a: Project, b: Project): number {
   const aOrder = projectDisplayOrder.indexOf(a.id);
@@ -42,14 +42,14 @@ function byProjectDisplayOrder(a: Project, b: Project): number {
 export const projects: Project[] = [
   {
     id: "surface",
-    title: "Surface",
-    subtitle: "Prediction Market API",
+    title: "Surface API",
+    subtitle: "Founding Engineer",
     description:
-      "I built Surface with the intention of connecting it to my baseball model, and started by matching equivalent markets across Kalshi and Polymarket.",
-    year: "Winter/Spring 2026",
-    category: "project",
-    role: "Founder",
-    tech: ["Go", "DSPy", "Agent design", "Tool calling", "Benchmarking"],
+      "Surface API is a cross-exchange prediction-market API that normalizes equivalent Kalshi and Polymarket contracts into deterministic match clusters.",
+    year: "Jan 2026 – May 2026",
+    category: "experience",
+    role: "Founding Engineer",
+    tech: ["Python", "SQLite", "Pydantic AI", "OpenRouter"],
     links: {
       live: "https://surfaceapi.com",
     },
@@ -60,7 +60,7 @@ export const projects: Project[] = [
     title: "Sifted Jobs",
     subtitle: "AI-Powered Job Board",
     description:
-      "Reading job descriptions is tedious. Sifted Jobs pulls the useful information out of job postings so I can find roles that actually make sense.",
+      "Sifted Jobs turns messy job postings into structured, searchable data so job seekers can find relevant roles faster.",
     year: "2025",
     category: "project",
     role: "Project",
@@ -75,7 +75,7 @@ export const projects: Project[] = [
     title: "Prop Engine",
     subtitle: "Baseball Prediction Engine",
     description:
-      "Baseball is the project I keep coming back to. Prop Engine turns years of pitch data, matchup context, and research into player prop predictions.",
+      "MLB Daily Predictions turns years of pitch-level data and matchup context into daily player projections.",
     year: "2024",
     category: "project",
     role: "Project",
@@ -88,13 +88,13 @@ export const projects: Project[] = [
   {
     id: "platform-science",
     title: "Platform Science",
-    subtitle: "SWE Intern",
+    subtitle: "Software Engineer Intern",
     description:
-      "Backend testing in Go for truck fleet telematics, protobufs, and concurrency.",
-    year: "Summer 2023",
+      "Authored Go test coverage for an embedded telemetry backend, exercising Protocol Buffer serialization and goroutine concurrency to reproduce timing-dependent race conditions under test.",
+    year: "Jun 2023 – Aug 2023",
     category: "experience",
-    role: "Intern",
-    tech: [],
+    role: "Software Engineer Intern",
+    tech: ["Go", "Protocol Buffers", "Goroutines"],
   },
   {
     id: "berkeley",
@@ -109,10 +109,10 @@ export const projects: Project[] = [
   },
   {
     id: "spoti-cli",
-    title: "Spoti-CLI",
+    title: "Spotify Terminal Client",
     subtitle: "Spotify Terminal App",
     description:
-      "I wanted to use Spotify without reaching for my mouse. Spoti CLI lets me browse my library, control playback, and navigate everything from the keyboard.",
+      "A keyboard-first Spotify client for browsing libraries, controlling playback, and navigating entirely from the terminal.",
     year: "2020",
     category: "project",
     role: "Project",

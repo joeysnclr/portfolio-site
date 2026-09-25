@@ -130,7 +130,7 @@ function LinkLine({ project }: { project: Project }) {
 }
 
 function TechLine({ project }: { project: Project }) {
-  if (project.category === "education" || project.tech.length === 0) return null;
+  if (project.category !== "experience" || project.tech.length === 0) return null;
 
   return <div className="text-sm text-muted">{project.tech.join(" · ")}</div>;
 }
@@ -215,9 +215,8 @@ function HomeOneLayout({
 export function HomeOnePage() {
   const [activeImage, setActiveImage] = useState<ActiveImage>(null);
   const sections = [
-    {
-      items: [...getEducation(), ...getExperience()],
-    },
+    { title: "Education", items: getEducation() },
+    { title: "Experience", items: getExperience() },
     { title: "Projects", items: getProjects() },
   ];
 
